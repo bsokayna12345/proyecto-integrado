@@ -1,0 +1,64 @@
+{% extends 'administracion/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  Productos  
+{% endblock title %}
+
+
+{% block link %}
+  
+{% endblock link %}
+
+
+{% block content %}
+ 
+<div class="card mt-5">
+  <h5 class="card-header"> Productos</h5>
+  <div class="m-2 mt-3">
+    <a href="{% url 'administracion:producto_new' %}" class="btn btn-warning">
+      Añadir producto
+    </a> 
+  </div>
+<div class="card-body">
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+          <th>id</th>
+          <th>categoria</th>
+          <th>sub categoria</th>
+          <th>marca</th>
+          <th>nombre</th>
+          <th>precio</th>          
+        </tr>
+    </thead>
+    <tbody>
+      
+      {% for producto  in qsProducto %}
+      <tr>
+        <td>
+          <a href="{% url 'administracion:producto_edit' key=producto.id %}">
+            {{producto.id}}
+          </a>
+        </td>
+        <td>{{producto.categoria_id}}</td>
+        <td>{{producto.subcategoria_id}}</td>
+        <td>{{producto.marca_id}}</td>
+        <td>{{producto.nombre}}</td>
+        <td>{{producto.precio}}</td>      
+       </tr> 
+      {% endfor %}              
+    </tbody>
+  </table>
+  </div>
+</div>
+
+{% endblock content %}
+{% block script %}
+{% endblock script %}
+  
+  
+  
+
+  
