@@ -1,0 +1,71 @@
+{% extends 'administracion/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  Registro  
+{% endblock title %}
+
+{% block link %}
+  
+{% endblock link %}
+
+{% block content %} 
+<div class="card mt-5">  
+    <form  method="post" class="form-floating" actions="{% url 'administracion:producto_new' %}">    
+        {% csrf_token %} 
+        <input type="hidden" name="secure_data" value="{{secure_data}}"/>      
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.username}}                        
+                <label for="{{form.username.id_for_label}}">{{form.username.label}}</label>
+                <h5 class="small">{{form.username.errors}} </h5>                  
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.last_name}}                        
+                <label for="{{form.last_name.id_for_label}}">{{form.last_name.label}}</label>
+                <h5 class="small">{{form.last_name.errors}} </h5>                  
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.first_name}}                        
+                <label for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label>
+                <h5 class="small">{{form.first_name.errors}} </h5>                  
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.email}}                        
+                <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+                <h5 class="small">{{form.email.errors}} </h5>                  
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.password1}}                        
+                <label for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
+                <h5 class="small">{{form.password.errors}} </h5>                  
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-floating">                                    
+                {{form.password2}}                        
+                <label for="{{form.password2.id_for_label}}">{{form.password2.label}}</label>
+                <h5 class="small">{{form.password2.errors}} </h5>                  
+            </div>
+        </div>
+        <button type="submit" class="col-md-1 btn btn-success" name="comando" value="guardar">Guardar</button>
+    </form>
+</div>
+
+{% endblock content %}
+{% block script %}
+{% endblock script %}
+  
+  
+  
+
+  

@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.views.generic.base import TemplateView
 from main.funciones import  desencriptar, encriptar
 from django.http import HttpResponseServerError
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from main.models import Producto, SubCategoria
 from .productoForms import ProductoForm
 
@@ -29,7 +31,8 @@ class ProductoListFilterPageView(TemplateView):
         return render(request, self.template_name, contexto)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
-        
+
+@method_decorator(login_required, name='dispatch')    
 class ProductoEditPageView(TemplateView):
     """ editar o añadir producto """
     template_name ="administracion/producto-edit.html"
@@ -65,15 +68,13 @@ class ProductoEditPageView(TemplateView):
          
             return render(request, self.template_name, contexto)
         except Exception as Err:
-            return Err       
-   
-
+            return Err          
 
     def post(self, request, *args, **kwargs):
         try:    
             key = kwargs.get('key')                                           
             secure_data = request.POST.get("secure_data", None)          
-            if secure_data not in ["None"]:                            
+            if secure_data  not in ["None"]:          
                 dict_desencriptado = desencriptar(secure_data, {"key":str(key)})             
                 if dict_desencriptado:                              
                     producto_id = Producto.objects.filter(id=key).first() 
