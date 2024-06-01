@@ -17,6 +17,8 @@ sqlparse==0.4.4
 typing_extensions==4.11.0
 Werkzeug==3.0.2
 django-bootstrap5 ===24.1
-
+psycopg2-binary==2.9.9 #Para utilizar postgres
+django-environ==0.11.2 #Para las variables de entorno de docker-compose
+fontawesomefree==6.5.1
 #python manage.py flush
 #find . -path "*/migrations/*.py" -not -name "__init__.py" -delete

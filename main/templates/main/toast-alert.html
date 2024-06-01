@@ -83,12 +83,21 @@
         </div>                  
     {% endif %}
                 
-        <script>
-            document.getElementById('closeToastbtn').addEventListener('click', function () {
-              var toastEl = document.getElementById('liveToast');
-              var toast = new bootstrap.Toast(toastEl);
-              toast.dispose();
-            });
-        </script>
+    <script>
+        // Espera a que se cargue el DOM antes de ejecutar el código
+        document.addEventListener('DOMContentLoaded', function () {
+            // Obtén el botón de cerrar toast
+            var closeToastBtn = document.getElementById('closeToastbtn');
+            // Verifica si el botón existe en el DOM antes de añadir un event listener
+            if (closeToastBtn) {
+                closeToastBtn.addEventListener('click', function () {
+                    var toastEl = document.getElementById('liveToast');
+                    var toast = new bootstrap.Toast(toastEl);
+                    toast.dispose();
+                });
+            }
+        });
+    </script>
+    
     </body>
 </html>

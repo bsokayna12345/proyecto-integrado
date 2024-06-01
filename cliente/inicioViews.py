@@ -34,11 +34,12 @@ class ProductoListPageView(TemplateView):
             )
             return contexto
         except Exception as Err:
-            return Err
+            print(Err)
+            return {}
      
     def get(self, request, *args, **kwargs):
         qsProducto = Producto.objects.all()
-        contexto = self.contexto(request, qsProducto)
+        contexto = self.contexto(request = request, qsProducto = qsProducto)
         return render(request, self.template_name, contexto)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
