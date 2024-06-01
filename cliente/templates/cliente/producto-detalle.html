@@ -1,0 +1,70 @@
+{% extends 'cliente/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  producto detalle 
+{% endblock title %}
+
+
+{% block link %}
+
+
+{% endblock link %}
+{% block cesta %}
+<div>        
+  <a class="nav-link  text-light" href="{% url 'cliente:carrito_list' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px;"></i>
+    Cesta
+    <span class="badge text-light  rounded-pill" style="background-color: #F4D03F; font-size: 20px;">{{contador_unidades_carrito}}</span>
+  </a>          
+</div>  
+{% endblock cesta %}
+
+{% block content %}
+  
+<div class="container marketing mt-5">
+  
+  <!-- PRODUCTOS -->
+  <div class="container mt-5">
+    <div class="row">              
+        <div class="col-md-4 d-flex align-content-stretch ">
+            <img src="/media/imagenes_coroucel/caroucel.jpeg">                     
+        </div>  
+        <div class="col-md-6">
+            <div class="card mb-4 box-shadow">                                
+              </div>
+        </div>
+        <div class="col-md-2 d-flex justify-content-center">
+            <div class="card mb-4 box-shadow  align-self-center"> 
+              <form action="{% url 'cliente:carrito_edit' key=producto_id.id %}" method="post">        
+                {% csrf_token %}                      
+                  <div class="input-group">
+                    <span class="input-group-text" id="basic-addon1">Cantidad</span>
+                    <input class="form-control" type="number"  name="unidades" value="1" min="1" > 
+                  </div>
+                <button type="submit" class="btn btn-warning mt-2  w-100" name="comando" value="añadir">
+                  añadir a la cesta
+                </button>
+              </form>
+              <a href="{% url 'cliente:carrito_list' %}" class="btn btn-warning mt-2">
+                Comprar
+              </a>     
+              
+            </div>
+        </div>                     
+    </div>
+  </div>  
+  <!-- /FIN PRODUCTOS-->
+</div>
+
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
+  
+  
+  
+
+  

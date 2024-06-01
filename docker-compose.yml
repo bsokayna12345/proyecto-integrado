@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres:16
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: tienda
+      POSTGRES_USER: developer
+      POSTGRES_PASSWORD: developer
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DEBUG: '1'
+      DJANGO_SETTINGS_MODULE: tienda.settings
+      DATABASE_NAME: mydatabase
+      DATABASE_USER: myuser
+      DATABASE_PASSWORD: mypassword
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+
+volumes:
+  postgres_data:

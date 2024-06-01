@@ -38,11 +38,13 @@ class ProductoForm(forms.ModelForm):
             'precio',
             'iva',          
             'desccripcion',
+            'unidades',
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'nombre'}),
             'marca_id': forms.Select(attrs={'class':'form-control', 'placeholder':'marca_id'}),
-            'precio': forms.TextInput(attrs={'class':'form-control',}),                        
+            'precio': forms.TextInput(attrs={'class':'form-control',}),        
+            'unidades': forms.NumberInput(attrs={'class':'form-control', 'placeholder':'unidades'}),                        
             'iva': forms.TextInput(attrs={'class':'form-control'}),            
             'desccripcion': forms.Textarea(attrs={'class':'form-control',"cols": "40", "rows": "140","style": "height:90px;"}),             
         }

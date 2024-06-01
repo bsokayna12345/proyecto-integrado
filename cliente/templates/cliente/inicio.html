@@ -8,32 +8,91 @@
 
 
 {% block link %}
-  
 {% endblock link %}
 
+{% block cesta %}
+<div>        
+  <a class="nav-link  text-light" href="{% url 'cliente:carrito_list' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px;"></i>
+    Cesta
+    <span class="badge text-light  rounded-pill" style="background-color: #F4D03F; font-size: 20px;">{{contador_unidades_carrito}}</span>
+  </a>          
+</div>  
+{% endblock cesta %}
 
-{% block content %}
+{% block caroucel %}
+<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+      <div class="container">
+        <div class="carousel-caption text-start">
+          <h1>Example headline.</h1>
+          <p>Some representative placeholder content for the first slide of the carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Sign up today</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+      <div class="container">
+        <div class="carousel-caption">
+          <h1>Another example headline.</h1>
+          <p>Some representative placeholder content for the second slide of the carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Learn more</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false"><rect width="100%" height="100%" fill="#777"/></svg>
+
+      <div class="container">
+        <div class="carousel-caption text-end">
+          <h1>One more for good measure.</h1>
+          <p>Some representative placeholder content for the third slide of this carousel.</p>
+          <p><a class="btn btn-lg btn-primary" href="#">Browse gallery</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
   
+{% endblock caroucel %}
+  
+{% block content %}
 <div class="container marketing">
   <!-- PRODUCTOS -->
   <div class="container">
     <div class="row">      
-      {% for producto_id in qsProducto  %}
+      {% for producto_id in qsProducto  %}     
         <div class="col-md-4">
+          <a href="{% url 'cliente:producto_detalle' key=producto_id.id%}" style="text-decoration: none; color: #5a5a5a;">
           <div class="card mb-4 box-shadow">
             <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22380%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20380%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_18fbb4f2436%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A19pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_18fbb4f2436%22%3E%3Crect%20width%3D%22380%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22125.9765625%22%20y%3D%22120.9%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true">
             <div class="card-body">
+              <p class="card-text">{{producto_id.nombre}}</p>
               <p class="card-text">{{producto_id.desccripcion}}</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="btn-group">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
-                </div>
-                <small class="text-muted">9 mins</small>
+              <div class="d-flex justify-content-between align-items-center">                               
+                <small class="text-muted">{{producto_id.precio}}€</small>
               </div>
             </div>
           </div>
-        </div>      
+        </a>
+        </div>            
       {% endfor %}                   
     </div>
   </div>  
@@ -44,7 +103,7 @@
 {% endblock content %}
 
 {% block script %}
-  
+
 {% endblock script %}
   
   
