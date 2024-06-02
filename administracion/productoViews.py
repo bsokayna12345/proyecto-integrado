@@ -32,7 +32,7 @@ class ProductoListFilterPageView(TemplateView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
-@method_decorator(login_required, name='dispatch')    
+@method_decorator(login_required(login_url='administracion:login'), name='dispatch')    
 class ProductoEditPageView(TemplateView):
     """ editar o añadir producto """
     template_name ="administracion/producto-edit.html"
@@ -46,7 +46,8 @@ class ProductoEditPageView(TemplateView):
                 form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=producto_id.subcategoria_id.id) 
                 
                 key = producto_id.id    
-                secure_data=encriptar(dict(key=str(key)))         
+                secure_data=encriptar(dict(key=str(key)))        
+            
             contexto = dict(
                 form=form,
                 secure_data=secure_data
@@ -65,6 +66,9 @@ class ProductoEditPageView(TemplateView):
             else:
                 producto_id = None                                                   
             contexto = self.contexto(request, producto_id=producto_id)       
+            if request.session.get("add_contexto", None) is not None:
+                contexto.update(request.session["add_contexto"])
+                del request.session["add_contexto"]
          
             return render(request, self.template_name, contexto)
         except Exception as Err:
@@ -90,11 +94,32 @@ class ProductoEditPageView(TemplateView):
             if comando == 'guardar':
                 if form.is_valid():
                     form.save()
+                    titulo='Guardar'
+                    tipo='success'
+                    mensaje='Los datos se han guardado correctamente'
                 else:
+                    titulo='Guardar'
+                    tipo='Error'
+                    mensaje='Los datos No se han guardado'
                     raise ValueError("El formulario no es válido")
+                request.session["add_contexto"]=dict(
+                    toast=dict(
+                        titulo=titulo,
+                        tipo=tipo,
+                        mensaje=mensaje,
+                )    )
+          
             if comando == 'eliminar':               
-                producto_id.delete()
-                return redirect(reverse('administracion:producto_list'))   
+                producto_id.delete()               
+                mensaje='Se ha eleminado el producto'
+                request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Eliminar',
+                    tipo='Info',
+                    mensaje='Se ha eleminado el producto'
+            )    )
+                return redirect(reverse('administracion:producto_list')) 
+           
             return redirect(reverse('administracion:producto_edit', kwargs=dict(key=form.instance.id)))        
             
         except Exception as Err:
