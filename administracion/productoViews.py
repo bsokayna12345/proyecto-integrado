@@ -28,6 +28,9 @@ class ProductoListFilterPageView(TemplateView):
     def get(self, request, *args, **kwargs):
         qsProducto = Producto.objects.all()
         contexto = self.contexto(request, qsProducto)
+        if request.session.get("add_contexto", None) is not None:
+            contexto.update(request.session["add_contexto"])
+            del request.session["add_contexto"]
         return render(request, self.template_name, contexto)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -110,7 +113,7 @@ class ProductoEditPageView(TemplateView):
                 )    )
           
             if comando == 'eliminar':               
-                producto_id.delete()               
+                producto_id.delete() 
                 mensaje='Se ha eleminado el producto'
                 request.session["add_contexto"]=dict(
                 toast=dict(
@@ -123,7 +126,16 @@ class ProductoEditPageView(TemplateView):
             return redirect(reverse('administracion:producto_edit', kwargs=dict(key=form.instance.id)))        
             
         except Exception as Err:
-            return Err
+             #request.session["add_contexto"]["toast"]["mensaje"].args
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje
+                    )         
+                )
+            return redirect(reverse('administracion:producto_list')) 
 
 
 
