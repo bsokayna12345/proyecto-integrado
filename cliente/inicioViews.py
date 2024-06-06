@@ -30,7 +30,7 @@ class ProductoListPageView(TemplateView):
             contexto = dict(
                 qsProducto=qsProducto,
                 toast=toast, 
-                contador_unidades_carrito=contador_unidades_carrito,                              
+                contador_unidades_carrito=contador_unidades_carrito,                                         
             )
             return contexto
         except Exception as Err:

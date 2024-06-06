@@ -22,12 +22,9 @@ class PerfileUsuarioView(TemplateView):
             return Err
      
     def get(self, request, *args, **kwargs):
-        try:                
-            # form = PerfileUsuarioForm()
-            key = kwargs.get('key', None)
-            if key is not None:                
-                perfel_id = Perfil.objects.filter(id=key).first()
-            else:
+        try:                                                                  
+            perfel_id = Perfil.objects.filter(user_id = get_user_model().objects.get(id=request.user.id)).first()
+            if perfel_id is None:
                 perfel_id = None
             contexto = self.contexto(request, perfel_id=perfel_id)
             return render(request, self.template_name, contexto)

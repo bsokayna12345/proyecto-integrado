@@ -49,7 +49,8 @@ class SubCategoria(models.Model):
 class Producto(models.Model):
     id = models.AutoField(db_column="id", primary_key=True, verbose_name=_('ID'))    
     nombre = models.CharField(max_length=200,  )
-    precio = models.DecimalField(decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])
+    precio = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])
+    precio_con_iva = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])
     unidades = models.PositiveIntegerField(default=0)
     iva = models.DecimalField(default=0.21, decimal_places=2, max_digits=5, validators=[MinValueValidator(0.00)])
     desccripcion = models.TextField(null=True, blank=True)    

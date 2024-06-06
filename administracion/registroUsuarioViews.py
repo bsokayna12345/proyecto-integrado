@@ -31,16 +31,14 @@ class RegistroUsuarioView(TemplateView):
             return Err
         
     def post(self, request, *args, **kwargs):
-        try:            
-            
-            form = RegistroForm(request.POST)
-            if not form.is_valid():
-                raise NameError("Formulario no es valido")
+        try:                        
+            form = RegistroForm(request.POST)          
             with db.transaction.atomic():
                 if form.is_valid(): 
                     usuario_id = get_user_model()(
-                        username=form.cleaned_data["email"],
-                        last_name=form.cleaned_data["last_name"],
+                        first_name=form.cleaned_data["username"],
+                        username=form.cleaned_data["email"],                        
+                        last_name=form.cleaned_data["last_name"],                        
                         email= form.cleaned_data["email"],
                         password = make_password(form.cleaned_data["password1"]),
                     ) 
@@ -49,8 +47,11 @@ class RegistroUsuarioView(TemplateView):
                             user_id = usuario_id                   
                         )                    
                     perfil_id.save()       
-                    return redirect(reverse('administracion:perfile_usuario', kwargs=dict(key=perfil_id.id)))
-                return redirect(reverse('administracion:registro_usuario'))
+                    return redirect(reverse('administracion:perfile_usuario'))
+                else:
+                    contexto = self.contexto(request, form=form)
+            return render(request, self.template_name, contexto)                          
         except Exception as Err:
             print(Err)
-            return redirect(reverse('administracion:registro_usuario'))
+            return redirect('administracion:registro_usuario')
+                

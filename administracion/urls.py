@@ -1,25 +1,29 @@
 
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from administracion.filtrosView import filtro_subcategoria_categoria
 from administracion.loginViews import LoginView, logout_view
 from administracion.perfilUsuarioViews import PerfileUsuarioView
-from administracion.productoViews import ProductoEditPageView, ProductoListFilterPageView
+from administracion.productoViews import ProductoEditPageView, ProductoListFilterPageView, SubirImagen
 from django.contrib.auth import views as auth_views
 from administracion.registroUsuarioViews import RegistroUsuarioView
 from administracion.views import index
 app_name="administracion"
 urlpatterns = [   
     path('', index, name='index'),
-    path('administracion/producto-list', ProductoListFilterPageView.as_view(), name='producto_list'),
-    path('administracion/producto-edit/<int:key>', ProductoEditPageView.as_view(), name='producto_edit'),
-    path('administracion/producto-new/', ProductoEditPageView.as_view(), name='producto_new'),
-    path('administracion/filtro-subcategoria/',filtro_subcategoria_categoria ),
-    path('administracion/registro-usuario',RegistroUsuarioView.as_view(), name='registro_usuario'),
-    path('administracion/perfil_usuario/<int:key>',PerfileUsuarioView.as_view(), name='perfile_usuario'),
-    path('administracion/login',LoginView.as_view(), name='login'),    
-    path('administracion/logout',logout_view, name='logout'),
-]
+    path('producto-list', ProductoListFilterPageView.as_view(), name='producto_list'),
+    path('producto-edit/<int:key>', ProductoEditPageView.as_view(), name='producto_edit'),
+    path('producto-new/', ProductoEditPageView.as_view(), name='producto_new'),
+    path('subir-imagen/<int:key_producto>/', SubirImagen.as_view(), name='subir_imagen'),
+    path('filtro-subcategoria/',filtro_subcategoria_categoria ),    
+    path('registro-usuario',RegistroUsuarioView.as_view(), name='registro_usuario'),
+    path('perfil_usuario',PerfileUsuarioView.as_view(), name='perfile_usuario'),
+    path('login',LoginView.as_view(), name='login'),    
+    path('logout',logout_view, name='logout'),
+ 
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # path(
 #         "change-password/",
 #         auth_views.PasswordChangeView.as_view(template_name="change-password.html"),
