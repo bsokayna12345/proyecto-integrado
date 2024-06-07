@@ -42,29 +42,25 @@
   </head>
   <body>    
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap shadow">
-      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Atlas</a>
+      <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">AtlasShop</a>
       <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Buscar" aria-label="Search">
-      
-      <div class="navbar-nav">
-         <div class="nav-item text-nowrap">
-          {% if  user.is_authenticated %}          
-            <a class="nav-link px-3" href="{% url 'administracion:perfile_usuario'%}">{{request.user.last_name}}</a>
-            <a class="nav-link px-3" href="{% url 'administracion:logout' %}">Cerrar sesión</a>
-          {% else %}            
-            <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
-          {% endif %}
-        </div>
-        {% comment %} <div class="nav-item text-nowrap">
-          {% if  user.is_authenticated %}          
-            <a class="nav-link px-3" href="{% url 'administracion:perfile_usuario'%}">{{request.user.last_name}}</a>
-            <a class="nav-link px-3" href="{% url 'administracion:logout' %}">Cerrar sesión</a>
-          {% else %}            
-            <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
-          {% endif %}
-        </div> {% endcomment %}
+      <div class="col-md-3 col-lg-2 me-0 px-3">
+          <div class="flex-shrink-0 dropdown">
+            <a href="#" class="d-block link-light text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+              <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+            </a>
+          <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">          
+            <li><a class="dropdown-item"href="{% url 'administracion:perfile_usuario' %}">Perfil</a></li>
+            <li><hr class="dropdown-divider"></li>
+              {% if  user.is_authenticated %}      
+                <li><a class="dropdown-item" href="{% url 'administracion:logout' %}">Cerrar sesión</a></li>
+              {% else %}            
+                <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
+              {% endif %}
+          </ul>
+        </div>        
       </div>         
     </header>
 
@@ -73,18 +69,7 @@
         <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
           <div class="position-sticky pt-3">
             <ul class="nav flex-column">
-              <li class="nav-item">
-                <!-- <a class="nav-link active" aria-current="page" href="#">
-                  <span data-feather="home"></span>
-                  Dashboard
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file"></span>
-                  Orders
-                </a>
-              </li> -->
+              <li class="nav-item">              
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'administracion:producto_list' %}">
                   <span data-feather="shopping-cart"></span>
@@ -102,53 +87,8 @@
                   <span data-feather="users"></span>
                   Uuarios 
                 </a>
-              </li>
-              <!-- <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="bar-chart-2"></span>
-                  Reports
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="layers"></span>
-                  Integrations
-                </a>
-              </li> -->
+              </li>            
             </ul>
-<!-- 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-              <span>Saved reports</span>
-              <a class="link-secondary" href="#" aria-label="Add a new report">
-                <span data-feather="plus-circle"></span>
-              </a>
-            </h6>
-            <ul class="nav flex-column mb-2">
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Current month
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Last quarter
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Social engagement
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">
-                  <span data-feather="file-text"></span>
-                  Year-end sale
-                </a>
-              </li>
-            </ul> -->
           </div>
         </nav>
 

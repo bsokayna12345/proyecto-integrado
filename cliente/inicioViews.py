@@ -18,18 +18,17 @@ class ProductoListPageView(TemplateView):
 
     def contexto(self, request, qsProducto:Producto): #form:formulariofilter
         try:
-            toast=dict(
-                titulo='desde el ninici toast titulo',
-                tipo='success'
-            )
+           
             contador_unidades_carrito = 0
             qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
             if qsCarrito.count() > 0 :
                 for carrito_id in qsCarrito:
                     contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades                
+            #anadir las imagenes principal al producto
+            for producto_id in qsProducto:
+                producto_id.imagen_p= producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
             contexto = dict(
-                qsProducto=qsProducto,
-                toast=toast, 
+                qsProducto=qsProducto,                                 
                 contador_unidades_carrito=contador_unidades_carrito,                                         
             )
             return contexto
@@ -38,8 +37,17 @@ class ProductoListPageView(TemplateView):
             return {}
      
     def get(self, request, *args, **kwargs):
-        qsProducto = Producto.objects.all()
+        key_categoria = kwargs.get('key_categoria', None)
+        qsProducto=None
+        if key_categoria is not None:
+            subcategoria_id = SubCategoria.objects.filter(categoria_id__id=key_categoria).first()
+            qsProducto = Producto.objects.filter(subcategoria_id=subcategoria_id)
+        else:
+            qsProducto = Producto.objects.all()
         contexto = self.contexto(request = request, qsProducto = qsProducto)
+        if request.session.get("add_contexto", None) is not None:
+            contexto.update(request.session["add_contexto"])
+            del request.session["add_contexto"]
         return render(request, self.template_name, contexto)
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
@@ -61,10 +69,22 @@ class ProductoDetalle(TemplateView):
             )
             return contexto
         except Exception as Err:
-            return Err
+            print(Err)
+            return {}
      
     def get(self, request, *args, **kwargs):
-        key = kwargs.get('key', None)
-        producto_id = Producto.objects.get(id=key)
-        contexto = self.contexto(request, producto_id)
-        return render(request, self.template_name, contexto)    
+        try:
+            key = kwargs.get('key', None)
+            producto_id = Producto.objects.get(id=key)
+            contexto = self.contexto(request, producto_id)
+            return render(request, self.template_name, contexto)  
+        except Exception as Err:
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje                    
+                    )         
+                )  
+            return redirect(reverse('cliente:producto_list'))

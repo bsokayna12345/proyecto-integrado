@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from administracion.filtrosView import filtro_subcategoria_categoria
 from administracion.loginViews import LoginView, logout_view
-from administracion.perfilUsuarioViews import PerfileUsuarioView
+from cliente.perfilUsuarioViews import PerfileUsuarioView
 from administracion.productoViews import ProductoEditPageView, ProductoListFilterPageView, SubirImagen
 from django.contrib.auth import views as auth_views
 from administracion.registroUsuarioViews import RegistroUsuarioView

@@ -3,13 +3,13 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 
-from administracion.perfileUsuarioForms import PerfileUsuarioForm
+from cliente.perfileUsuarioForms import PerfileUsuarioForm
 from administracion.registroUsuarioForms import RegistroForm
 from main.models import Perfil
 
 
 class PerfileUsuarioView(TemplateView):
-    template_name = "administracion/perfil-usuario.html"
+    template_name = "cliente/perfil-usuario.html"
     
     def contexto(self, request, perfel_id:Perfil): 
         try:

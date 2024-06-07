@@ -68,7 +68,9 @@ class Producto(models.Model):
 class ImagenProducto(models.Model):
     id = models.AutoField(db_column='id', primary_key=True)
     imagen = models.ImageField(upload_to='producto/imagenes', null=True, blank=True)
+    imagen_principal = models.BooleanField(default=False, blank=True, null=True)
     producto_id = models.ForeignKey(db_column='producto_id', to=Producto, on_delete=models.CASCADE, related_name='get_Producto_ImagenProducto', verbose_name=_("Producto"))
+    
 
     def __str__(self) -> str:
         return f"{self.imagen}-{self.producto_id}"
