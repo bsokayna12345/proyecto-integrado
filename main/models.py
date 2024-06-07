@@ -96,8 +96,10 @@ class Perfil(models.Model):
     class Meta:
         db_table = "perfil"
         verbose_name = "perfil"
-        verbose_name_plural ="Perfiles"
-        
+        verbose_name_plural ="Perfiles"       
+        constraints = [
+            models.UniqueConstraint(name='unique_user_id', fields=['user_id'])
+        ]
 class Direccion(models.Model):
     id = models.AutoField(db_column='id', primary_key=True)
     user_id = models.OneToOneField(db_column='', to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="get_Direccion_User")
@@ -126,8 +128,7 @@ class Carrito_Detalle(models.Model):
         db_table = 'carrito_Detalle'
         verbose_name = 'Carrito detalla'
         verbose_name_plural = 'Carritos Detalles'
-
-        UniqueConstraint(fields=['user_id', 'producto_id'], name='unique_user_producto_id'),
+        
         constraints = [
             models.UniqueConstraint(name='unique_user_producto_id', fields=['user_id', 'producto_id'])
         ]

@@ -51,7 +51,6 @@
           aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarsExample07">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
@@ -70,30 +69,27 @@
                 {% for categoria in categorias %}
                 <li><a class="dropdown-item" href="{% url 'cliente:producto_filter_categoria' key_categoria=categoria.id%}">{{ categoria.nombre }}</a></li>
                 {% endfor %}
-
               </ul>
             </li>
           </ul>
-
           {% block cesta %}
 
-          {% endblock cesta %}
-          <div class="col-md-3 col-lg-2 me-0 px-3">
-            <div class="flex-shrink-0 dropdown">
+          {% endblock cesta %}          
+          <div class="flex-shrink-0 dropdown">
               <a href="#" class="d-block link-light text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
-                <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+                  <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
               </a>
-            <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">          
-              <li><a class="dropdown-item"href="{% url 'administracion:perfile_usuario' %}">Perfil</a></li>
-              <li><hr class="dropdown-divider"></li>
-                {% if  user.is_authenticated %}      
-                  <li><a class="dropdown-item" href="{% url 'administracion:logout' %}">Cerrar sesión</a></li>
-                {% else %}            
-                  <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
-                {% endif %}
-            </ul>
+              <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">                  
+                 
+                  {% if user.is_authenticated %}     
+                      <li><a class="dropdown-item" href="{% url 'cliente:perfile_usuario' %}">Perfil</a></li> 
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="{% url 'cliente:logout' %}">Cerrar sesión</a></li>
+                  {% else %}            
+                      <li><a class="nav-link px-3" href="{% url 'cliente:login' %}">Iniciar sesión</a></li>
+                  {% endif %}
+              </ul>
           </div>        
-        </div>     
         </div>
       </div>
     </nav>

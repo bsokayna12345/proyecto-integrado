@@ -1,0 +1,44 @@
+
+{% extends 'cliente/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  Registro  
+{% endblock title %}
+
+{% block link %}
+   
+{% endblock link %}
+
+{% block content %} 
+<div class="card mt-5" align="center">        
+  <form actions="{% url 'cliente:login' %}" method="POST">
+    {% csrf_token %} 
+    <div class="col-md-3">
+      <div class="form-floating">                                    
+          {{form.email}}                        
+          <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+          <h5 class="small">{{form.email.errors}} </h5>                  
+      </div>      
+    </div>
+    <div class="col-md-3">
+      <div class="form-floating">                                    
+          {{form.password}}                        
+          <label for="{{form.password.id_for_label}}">{{form.password.label}}</label>
+          <h5 class="small">{{form.password.errors}} </h5>                  
+      </div>      
+      <button class="w-100 btn btn-lg btn-primary" type="submit">inicara sesión</button>
+      <a href="{% url 'cliente:registro_usuario' %}" class="w-100 btn btn-lg btn-secondary">registrar</a>      
+    </div>
+  </form>    
+</div>
+{% endblock content %}
+{% block script %}
+{% endblock script %}
+  
+  
+  
+
+  
+    

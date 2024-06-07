@@ -63,6 +63,8 @@ class ProductoDetalle(TemplateView):
             if qsCarrito.count() > 0 :
                 for carrito_id in qsCarrito:
                     contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades 
+            producto_id.imagen_p =  producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
+            producto_id.imagenes =  producto_id.get_Producto_ImagenProducto.all()
             contexto = dict(
                 producto_id=producto_id,
                 contador_unidades_carrito=contador_unidades_carrito,
