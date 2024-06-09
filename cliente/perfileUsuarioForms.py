@@ -39,12 +39,16 @@ class PerfilEditForm(forms.Form):
         label="Confirmar Contraseña",
         widget=forms.PasswordInput(attrs={"class": "form-control","placeholder":"Confirmar Contraseña","autocomplete": "new-password"}),
         strip=False,       
-    )   
+    ) 
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
     
     def clean_email(self):
         email1 = self.cleaned_data.get("email")
         print(email1)
-        if User.objects.filter(email=email1).exists():
+        if User.objects.filter(email=email1).exclude(id=self.user.id).exists():
             raise ValidationError("El email ya esta registrado, prueba con otro.")
         return email1
     
@@ -80,7 +84,7 @@ class PerfilEditForm(forms.Form):
 
 class PerfileUsuarioForm(forms.ModelForm):
           
-          
+
     class Meta:
         model = Perfil
         fields = [

@@ -144,7 +144,10 @@
             transition: all 0.3s ease-in-out;
         }
 
-body{margin-top:20px;}         
+
+        body{margin-top:20px;} 
+
+     
 
   </style>
 {% endblock link %}
@@ -167,8 +170,8 @@ body{margin-top:20px;}
               <p class="mb-0 d-block">{{perfil_id.user_id.email}}</p>
             </div>
           </div>          
-        </div>
-        <div class="row">
+        </div>        
+    <div class="row">
       <div class="col-sm-3">
         <!-- Contenido de la columna izquierda -->
       </div>
@@ -176,7 +179,7 @@ body{margin-top:20px;}
         <!-- Pestañas -->
         <ul class="nav nav-tabs" id="myTab">
           <li><a class="nav-link active" href="#home" data-bs-toggle="tab">Inicio</a></li>
-          <li><a class="nav-link" href="#messages" data-bs-toggle="tab">Mensajes</a></li>
+          
           <li><a class="nav-link" href="#settings" data-bs-toggle="tab">Editar perfil</a></li>
         </ul>
 
@@ -188,12 +191,75 @@ body{margin-top:20px;}
           <div class="tab-pane" id="messages">
             <!-- Contenido de la pestaña Messages -->
           </div>
+          {% if form.errors %}          
+            <!-- Contenido de la pestaña Settings -->
+            <hr>
+            <form class="form" action="{% url 'cliente:perfil_usuario_edit' %}" method="post" id="registrationForm">
+            {% csrf_token %}
+                <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.nombre}}                        
+                        <label for="{{form.nombre.id_for_label}}">{{form.nombre.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.nombre.errors}} </h5>                  
+                    </div>      
+                </div>    
+                <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.apellido}}                        
+                        <label for="{{form.apellido.id_for_label}}">{{form.apellido.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.apellido.errors}} </h5>                  
+                    </div>      
+                </div>    
+                {% comment %} <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.movil}}                        
+                        <label for="{{form.movil.id_for_label}}">{{form.movil.label}}</label>
+                        <h5 class="small">{{form.movil.errors}} </h5>                  
+                    </div>      
+                </div>  {% endcomment %}
+                <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.direccion}}                         
+                        <label for="{{form.movil.id_for_label}}">{{form.direccion.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.direccion.errors}} </h5>                  
+                    </div>      
+                </div> 
+                 <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.email}}                        
+                        <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.email.errors}} </h5>                  
+                    </div>      
+                </div>   
+                 <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.password1}}                        
+                        <label for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.password1.errors}} </h5>                  
+                    </div>      
+                </div>
+                 <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.password2}}                        
+                        <label for="{{form.password2.id_for_label}}">{{form.password2.label}}</label>
+                        <h5 class="small" style="color:#F5B7B1;">{{form.password2.errors}} </h5>                  
+                    </div>      
+                </div>        
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <br>
+                        <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
+                        <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Cancelar</button>
+                    </div>
+                </div>
+            </form>
+          
+          {% else %}
           <div class="tab-pane" id="settings">
             <!-- Contenido de la pestaña Settings -->
             <hr>
             <form class="form" action="{% url 'cliente:perfil_usuario_edit' %}" method="post" id="registrationForm">
             {% csrf_token %}
-
                 <div class="col-md-3">
                     <div class="form-floating">                                    
                         {{form.nombre}}                        
@@ -233,73 +299,16 @@ body{margin-top:20px;}
                     <div class="form-floating">                                    
                         {{form.password1}}                        
                         <label for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
-                        <h5 class="small">{{form.password1.errors}} </h5>                  
+                        <h5 class="small" style="color:#F5B7B1;">{{form.password1.errors}} </h5>                  
                     </div>      
                 </div>
                  <div class="col-md-3">
                     <div class="form-floating">                                    
                         {{form.password2}}                        
                         <label for="{{form.password2.id_for_label}}">{{form.password2.label}}</label>
-                        <h5 class="small">{{form.password2.errors}} </h5>                  
+                        <h5 class="small" style="color:#F5B7B1;">{{form.password2.errors}} </h5>                  
                     </div>      
-                </div>
-
-                {% comment %} <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="first_name">
-                            <h4>Nombre</h4></label>
-                        <input type="text" class="form-control" name="first_name" id="first_name" placeholder="nombre" >
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="last_name">
-                            <h4>Apellido</h4></label>
-                        <input type="text" class="form-control" name="last_name" id="last_name" placeholder="apellido">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-xs-6">
-                        <label for="mobile">
-                            <h4>Móvile</h4></label>
-                        <input type="text" class="form-control" name="movile" id="movile" placeholder="introduce número Móvil ">
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="email">
-                            <h4>Correo Electronic</h4></label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="you@email.com">
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="email">
-                            <h4>Direccion</h4></label>
-                        <input type="text" class="form-control" id="direccion" placeholder="dirección" >
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="password">
-                            <h4>Contraseña</h4></label>
-                        <input type="password" class="form-control" name="password" id="password" placeholder="contraseña">
-                    </div>
-                </div>
-                <div class="form-group">
-
-                    <div class="col-xs-6">
-                        <label for="password2">
-                            <h4>Confirmar Contraseña</h4></label>
-                        <input type="password" class="form-control" name="password2" id="password2" placeholder="confirmar contraseña">
-                    </div>
-                </div> {% endcomment %}
+                </div>        
                 <div class="form-group">
                     <div class="col-xs-12">
                         <br>
@@ -309,20 +318,13 @@ body{margin-top:20px;}
                 </div>
             </form>
           </div>
+          {% endif %}
         </div>
       </div>
+    </div>       
     </div>
-       
-    </div>
-
-
-
-
-<div class="container">
-    
-    
+<div class="container">        
   </div>
-
 {% endblock content %}
 {% block script %}
 {% endblock script %}
