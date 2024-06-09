@@ -9,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from main.models import Carrito_Detalle, Producto, SubCategoria
 from django.shortcuts import render
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+import uuid
 
     
 class CarritoListPageView(TemplateView):
@@ -28,6 +31,8 @@ class CarritoListPageView(TemplateView):
                         contador_unidades_carrito = contador_unidades_carrito + producto_id.unidades 
                         producto_id.precio_total = producto_id.producto_id.precio * producto_id.unidades
                         subtotal += producto_id.precio_total
+                        producto_id.imagen_p = producto_id.producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
+           
             contexto = dict(
                 qsCarrito=qsCarrito,
                 contador_unidades_carrito=contador_unidades_carrito,
@@ -41,8 +46,12 @@ class CarritoListPageView(TemplateView):
         
     def get(self, request, *args, **kwargs):
         try:
-            # buscar el carrito del usuario auhtenticado
-            qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)    
+            
+            if request.user.is_authenticated:
+                qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
+            else:
+                qsCarrito = Carrito_Detalle.objects.filter(session_key=request.session.session_key)
+               
             contexto = self.contexto(request=request, qsCarrito=qsCarrito)
             return render(request, self.template_name, contexto)
         except Exception as err:
@@ -64,10 +73,12 @@ class CarritoListPageView(TemplateView):
                 if producto_id.unidades < int(unidades_intoducida):
                     raise NameError('!insuficiente unidades¡')  
                 if comando == "añadir":                                   
-                    with db.transaction.atomic():                          
-                        carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()# buscar en el carrito si existe el producto
-                        if carrito_id is not None:
-                            
+                    with db.transaction.atomic(): 
+                        if request.user.is_authenticated:
+                            carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()
+                        else:
+                            carrito_id = Carrito_Detalle.objects.filter(session_key=request.session.session_key, producto_id=producto_id).first()                                                 
+                        if carrito_id is not None:                            
                             # existe
                             carrito_id.unidades = carrito_id.unidades + 1 
                         else:                
@@ -79,16 +90,22 @@ class CarritoListPageView(TemplateView):
                         carrito_id.save()   
                         producto_id.unidades = producto_id.unidades - int(unidades_intoducida)# editar las unidades
                         producto_id.save()     
-                    return redirect(reverse('cliente:producto_detalle', kwargs=dict(key=key)))                
+                    return redirect(reverse('cliente:producto_list', kwargs=dict(key=key)))                
                 if comando == "modificar":
-                    carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()
+                    if request.user.is_authenticated:
+                        carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()
+                    else:
+                        carrito_id = Carrito_Detalle.objects.filter(session_key=request.session.session_key, producto_id=producto_id).first()                    
                     carrito_id.unidades = int(unidades_intoducida)
                     carrito_id.save()
                     producto_id.unidades = producto_id.unidades - int(unidades_intoducida )
                     producto_id.save()
                 
                 if comando == "eliminar":
-                    carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()
+                    if request.user.is_authenticated:
+                        carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()
+                    else:
+                        carrito_id = Carrito_Detalle.objects.filter(session_key=request.session.session_key, producto_id=producto_id).first()
                     if carrito_id is not None:
                         carrito_id.delete()                                            
                 return redirect('cliente:carrito_list')
@@ -107,8 +124,11 @@ def anadirAlCarrito(request, key):
             else:
                 if producto_id.unidades < int(unidades_intoducida):
                     raise NameError('!insuficiente unidades¡')                                     
-                with db.transaction.atomic():                          
-                    carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()# buscar en el carrito si existe el producto
+                with db.transaction.atomic():        
+                    if request.user.is_authenticated:                  
+                        carrito_id = Carrito_Detalle.objects.filter(user_id=request.user, producto_id=producto_id).first()# buscar en el carrito si existe el producto
+                    else:
+                        carrito_id = Carrito_Detalle.objects.filter(session_key=request.session.session_key, producto_id=producto_id).first()# buscar en el carrito si existe el producto
                     if carrito_id is not None:
                         # existe
                         carrito_id.unidades = carrito_id.unidades + 1 
@@ -116,6 +136,7 @@ def anadirAlCarrito(request, key):
                         # no existe el producto
                         carrito_id = Carrito_Detalle()
                         carrito_id.user_id=request.user
+                        carrito_id.session_key=request.session.session_key
                         carrito_id.producto_id=producto_id
                         carrito_id.unidades=1
                     carrito_id.save()   

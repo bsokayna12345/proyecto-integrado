@@ -19,10 +19,10 @@ urlpatterns = [
     path('subir-imagen/<int:key_producto>/', SubirImagen.as_view(), name='subir_imagen'),
     path('filtro-subcategoria/',filtro_subcategoria_categoria ),    
     path('registro-usuario',RegistroUsuarioView.as_view(), name='registro_usuario'),
-    path('perfil_usuario',PerfileUsuarioView.as_view(), name='perfile_usuario'),
+    path('perfil_usuario',PerfileUsuarioView.as_view(), name='perfil_usuario'),
     path('login',LoginView.as_view(), name='login'),    
     path('logout',logout_view, name='logout'),
- 
+  
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 # path(
 #         "change-password/",

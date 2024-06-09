@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'main',
     'administracion',
     'cliente',
+    'paypal.standard.ipn',
     
 
 ]
@@ -157,3 +158,22 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PAYPAL_RECEIVER_EMAIL = "sb-470vqy31102112@business.example.com"
+PAYPAL_TEST = True
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your-email@example.com'
+EMAIL_HOST_PASSWORD = 'your-email-password'
+DEFAULT_FROM_EMAIL = 'your-email@example.com'
+# Emails
+if DEBUG:
+    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+    EMAIL_FILE_PATH= os.path.join(BASE_DIR, 'sent_email')
+else:
+    pass

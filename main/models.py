@@ -86,7 +86,7 @@ class Perfil(models.Model):
     dni = models.CharField(max_length=9)
     tel = models.CharField(max_length=12, null=True, blank=True)
     imagen = models.ImageField(upload_to="imagen_profile/", null=True, blank=True)
-    count = models.PositiveIntegerField(default=0)
+    contador = models.PositiveIntegerField(default=0)
     fecha_bloqueo = models.DateTimeField(null=True, blank=True)
     bloqueado = models.BooleanField(default=False)
     
@@ -120,9 +120,11 @@ class Direccion(models.Model):
 
 
 class Carrito_Detalle(models.Model):
-    user_id = models.ForeignKey(db_column='usuario_id', to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name='get_user_carrito')
-    producto_id = models.ForeignKey(to=Producto , on_delete=models.RESTRICT, related_name='get_producto_carrito')
     unidades = models.IntegerField()
+    session_key = models.CharField(max_length=40, null=True, blank=True)
+    user_id = models.ForeignKey(db_column='usuario_id', null=True, blank=True, to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name='get_user_carrito')    
+    producto_id = models.ForeignKey(to=Producto , on_delete=models.RESTRICT, related_name='get_producto_carrito')
+    
     
     class Meta:
         db_table = 'carrito_Detalle'

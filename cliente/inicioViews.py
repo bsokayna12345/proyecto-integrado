@@ -18,9 +18,13 @@ class ProductoListPageView(TemplateView):
 
     def contexto(self, request, qsProducto:Producto): #form:formulariofilter
         try:
-           
-            contador_unidades_carrito = 0
-            qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
+            
+            contador_unidades_carrito = 0   
+
+            if request.user.is_authenticated:
+                qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
+            else:
+                qsCarrito = Carrito_Detalle.objects.filter(session_key=request.session.session_key)                                 
             if qsCarrito.count() > 0 :
                 for carrito_id in qsCarrito:
                     contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades                
@@ -33,7 +37,14 @@ class ProductoListPageView(TemplateView):
             )
             return contexto
         except Exception as Err:
-            print(Err)
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje                    
+                    )         
+                )  
             return {}
      
     def get(self, request, *args, **kwargs):
@@ -59,10 +70,13 @@ class ProductoDetalle(TemplateView):
     def contexto(self, request, producto_id:Producto): #form:formulariofilter
         try:
             contador_unidades_carrito = 0
-            qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
-            if qsCarrito.count() > 0 :
-                for carrito_id in qsCarrito:
-                    contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades 
+            if request.user.is_authenticated:
+                qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
+            else:
+                qsCarrito = Carrito_Detalle.objects.filter(session_key=request.session.session_key)
+                if qsCarrito.count() > 0 :
+                    for carrito_id in qsCarrito:
+                        contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades 
             producto_id.imagen_p =  producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
             producto_id.imagenes =  producto_id.get_Producto_ImagenProducto.all()
             contexto = dict(

@@ -4,34 +4,84 @@
 {% load i18n %}
 
 {% block title %}
-  Registro  
+ Iniciar Session
 {% endblock title %}
 
 {% block link %}
    
 {% endblock link %}
+  <style>
 
+  </style>
 {% block content %} 
-<div class="card mt-5" align="center">        
-  <form actions="{% url 'cliente:login' %}" method="POST">
-    {% csrf_token %} 
-    <div class="col-md-3">
-      <div class="form-floating">                                    
-          {{form.email}}                        
-          <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
-          <h5 class="small">{{form.email.errors}} </h5>                  
-      </div>      
+
+<div id="main-wrapper" class="container">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card border-0">
+                <div class="card-body p-0">
+                    <div class="row no-gutters">
+                        <div class="col-lg-6">
+                            <div class="p-5">
+                                <div class="mb-5">
+                                    <h3 class="h4 font-weight-bold text-theme">Iniciar Session</h3>                                   
+                                </div>
+                                <form actions="{% url 'cliente:login' %}" method="POST">
+                                     {% csrf_token %} 
+                                  <div class="col">
+                                    <div class="form-floating">                                    
+                                        {{form.email}}                        
+                                        <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>                                                      
+                                    </div> 
+                                  </div>
+                                   <div class="col mt-2">
+                                      <div class="form-floating">                                    
+                                          {{form.password}}                        
+                                          <label for="{{form.password.id_for_label}}">{{form.password.label}}</label>                                                          
+                                      </div> 
+                                  </div>    
+                                   {% if form.errors %}
+                                      <div class="error">
+                                          <ul>
+                                              {% for error in form.non_field_errors %}
+                                                  <li style="color:red;">{{ error }}</li>
+                                              {% endfor %}
+                                          </ul>
+                                      </div>
+                                  {% endif %} 
+                                   
+                                  <div class="d-flex justify-content-between  mt-3">                               
+                                    <button type="submit" class="btn btn-info">Iniciar Session</button>
+                                    <a href="{% url 'password_reset' %}" class="forgot-link float-right text-primary">Has olvidado tu contraseña?</a>
+                                  </div>
+                                </form>
+                            </div>
+                             <p class="text-muted text-center mt-3 mb-0">No tienes una cuenta? <a href="{% url 'cliente:registro_usuario' %}" class="text-primary ml-1">registrar</a></p>
+                        </div>
+
+                        <div class="col-lg-6 d-none d-lg-inline-block">
+                            <div class="account-block rounded-right">
+                                <div class="overlay rounded-right"></div>
+                                <div class="account-testimonial">
+                                                                      
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+                <!-- end card-body -->
+            </div>
+            <!-- end card -->
+
+          
+
+            <!-- end row -->
+
+        </div>
+        <!-- end col -->
     </div>
-    <div class="col-md-3">
-      <div class="form-floating">                                    
-          {{form.password}}                        
-          <label for="{{form.password.id_for_label}}">{{form.password.label}}</label>
-          <h5 class="small">{{form.password.errors}} </h5>                  
-      </div>      
-      <button class="w-100 btn btn-lg btn-primary" type="submit">inicara sesión</button>
-      <a href="{% url 'cliente:registro_usuario' %}" class="w-100 btn btn-lg btn-secondary">registrar</a>      
-    </div>
-  </form>    
+    <!-- Row -->
 </div>
 {% endblock content %}
 {% block script %}

@@ -47,7 +47,7 @@ class RegistroUsuarioView(TemplateView):
                             user_id = usuario_id                   
                         )                    
                     perfil_id.save()       
-                    return redirect(reverse('cliente:perfile_usuario'))
+                    return redirect(reverse('cliente:perfil_usuario'))
                 else:
                     contexto = self.contexto(request, form=form)
             return render(request, self.template_name, contexto)                          

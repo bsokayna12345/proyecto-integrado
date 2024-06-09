@@ -36,6 +36,20 @@
         font-size: 3.5rem;
       }
     }
+        /* Estilo para el cuerpo de la página */
+    body {
+      margin-bottom: 100px; /* Ajusta este valor según la altura de tu footer */
+      position: relative;
+      min-height: 100vh; /* Esto es para que el footer se quede abajo incluso si hay poco contenido */
+    }
+
+    /* Estilo para el footer */
+    footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: px; /* Ajusta esta altura según sea necesario */
+    }
   </style>
   <!-- Custom styles for this template -->
   <link href="{% static '/main/carousel/carousel.css' %}" rel="stylesheet">
@@ -45,7 +59,7 @@
 
   <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Eighth navbar example">
-      <div class="container">
+      <div class="container-fluid">
         <a class="navbar-brand" href="#">AtlasShop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07"
           aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +96,7 @@
               <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">                  
                  
                   {% if user.is_authenticated %}     
-                      <li><a class="dropdown-item" href="{% url 'cliente:perfile_usuario' %}">Perfil</a></li> 
+                      <li><a class="dropdown-item" href="{% url 'cliente:perfil_usuario' %}">Perfil</a></li> 
                       <li><hr class="dropdown-divider"></li>
                       <li><a class="dropdown-item" href="{% url 'cliente:logout' %}">Cerrar sesión</a></li>
                   {% else %}            
@@ -105,9 +119,9 @@
 
     {%endblock%}
     <!-- FOOTER -->
-    <footer class="container">
-      <p class="float-end"><a href="#">Back to top</a></p>
-      <p>&copy; 2017–2021 Company, Inc. &middot; <a href="#">Privacy</a> &middot; <a href="#">Terms</a></p>
+    <footer class="container-fluid">
+      <p class="float-end"><a href="#">Volver arriba</a></p>
+      <p>&copy; 2024–2026 Atlas Shop &middot;</p>
     </footer>
   </main>
 

@@ -52,7 +52,7 @@
               <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
             </a>
           <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">          
-            <li><a class="dropdown-item"href="{% url 'administracion:perfile_usuario' %}">Perfil</a></li>
+            <li><a class="dropdown-item"href="{% url 'administracion:perfil_usuario' %}">Perfil</a></li>
             <li><hr class="dropdown-divider"></li>
               {% if  user.is_authenticated %}      
                 <li><a class="dropdown-item" href="{% url 'administracion:logout' %}">Cerrar sesión</a></li>
