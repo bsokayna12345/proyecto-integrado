@@ -26,6 +26,7 @@ class CarritoListPageView(TemplateView):
         try:
             contador_unidades_carrito = 0
             subtotal = 0
+            cart_items = []
             if qsCarrito is not None:                           
                 if qsCarrito.count() > 0 :
                     for producto_id in qsCarrito:
@@ -33,10 +34,19 @@ class CarritoListPageView(TemplateView):
                         producto_id.precio_total = producto_id.producto_id.precio * producto_id.unidades
                         subtotal += producto_id.precio_total
                         producto_id.imagen_p = producto_id.producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
-           
+                        precio_decimal = producto_id.producto_id.precio
+                        precio_float = float(precio_decimal)
+                        cart_items.append({
+                            'id': producto_id.id,
+                            'name': producto_id.producto_id.nombre,
+                            'quantity': producto_id.unidades,
+                            'price': precio_float,
+                        })
+                    cart_items.append(dict(subtotal=float(subtotal))) 
             contexto = dict(
                 qsCarrito=qsCarrito,
                 contador_unidades_carrito=contador_unidades_carrito,
+                cart_items=json.dumps(cart_items),
                 subtotal=subtotal,
                 respuesta = generateAccessToken()
             )            

@@ -34,8 +34,9 @@ class PayView(FormView):
 
 class CrearOrden(APIView):
     
-    def post(self, request):
-        order = create_order('Productos')
+    def post(self,  request, *args, **kwargs):
+        carrito = request.data.get('cart', [])
+        order = create_order(carrito)
         print('=====')
         print(order['id'])
         return Response(order, status=status.HTTP_200_OK)
@@ -46,8 +47,15 @@ class CapturarOdernPaypal(APIView):
     def post(self, request, *args, **kwargs):
         try:
             order_id = self.kwargs['order_id']
+             # Obtener el carrito de la solicitud POST
+            cart = request.data.get('cart')
+            
+            # Realizar la captura de la orden en PayPal
             response = capture_order(order_id)
+            
+            # Aquí puedes hacer algo con el carrito, por ejemplo, guardarlo en la base de datos
+            
             return Response(response, status=status.HTTP_200_OK)
         except Exception as error:
             print(error)
-            return Response({'error': 'error aqui'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'error aquí'}, status=status.HTTP_400_BAD_REQUEST)

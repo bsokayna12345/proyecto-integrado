@@ -28,25 +28,33 @@ def create_order(productos):
     try:
         accsess_token = generateAccessToken()
         url = "https://api-m.sandbox.paypal.com/v2/checkout/orders"
-        payload = {
-            "intent": "CAPTURE",
-            "purchase_units": [
-                {
-                    "amount": {
-                        "currency_code": "USD",
-                        "value": "5"
+        subtotal = productos[-1]            
+        for k, v in subtotal.items():
+            print(v)
+            payload = {
+                "intent": "CAPTURE",
+                "purchase_units": [
+                    {
+                        "amount": {
+                            "currency_code": "USD",
+                            "value": str(v)
+                        }
                     }
-                }
-            ]
-        }
+                ]
+            }
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {accsess_token}"
         }
         
         response = requests.post(url, headers=headers, json=payload)
-        print('--- response ---', response.json())
-        return response.json()
+        # Obtener la respuesta JSON
+        response_json = response.json()
+        
+        # Agregar el carrito a la respuesta
+        response_json['cart'] = productos
+        print('--- response ---', response_json)
+        return response_json
     except Exception as error:
         print('*****')
         print(error)

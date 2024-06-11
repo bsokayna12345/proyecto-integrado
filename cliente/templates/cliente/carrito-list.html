@@ -112,6 +112,7 @@ Carrito
             {% endfor %}
                                                 
         </div>
+        <input id="cart-items-data" type="hidden"  value="{{cart_items}}">
         <!-- Sidebar-->
         <div class="col-xl-3 col-md-4 pt-3 pt-md-0">
             <h2 class="h6 px-4 py-3 bg-secondary text-center">Subtotal</h2>
@@ -128,7 +129,6 @@ Carrito
 {% endblock content %}
 
 {% block script %}
-
 
 <!-- Initialize the JS-SDK -->
 <script src="https://www.paypal.com/sdk/js?client-id=test" data-sdk-integration-source="developer-studio"></script>
@@ -161,6 +161,13 @@ Carrito
     }
   }
 
+
+  const cartItemsv = document.getElementById('cart-items-data').value;
+  const decodedCartItems = decodeURIComponent(cartItemsv);
+  const cartItems = JSON.parse(decodedCartItems);
+    console.log(cartItems)
+
+
   window.paypal.Buttons({
     style: {
       shape: "rect",
@@ -177,12 +184,7 @@ Carrito
             "X-CSRFToken": csrftoken
           },
           body: JSON.stringify({
-            cart: [
-              {
-                id: 4,
-                quantity: 2,
-              },
-            ],
+            cart: cartItems,
           }),
         });
 
