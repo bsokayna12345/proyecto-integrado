@@ -7,8 +7,6 @@ from django.contrib.auth import logout, get_user_model
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-
-
 from administracion.loginForms import LoginForm
 from main.models import Perfil
 

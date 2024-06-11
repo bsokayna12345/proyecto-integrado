@@ -11,14 +11,6 @@
 
 
 {% endblock link %}
-{% block cesta %}
-<div>        
-  <a class="nav-link  text-light" href="{% url 'cliente:carrito_list' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px;"></i>
-    Cesta
-    <span class="badge text-light  rounded-pill" style="background-color: #F4D03F; font-size: 20px;">{{contador_unidades_carrito}}</span>
-  </a>          
-</div>  
-{% endblock cesta %}
 
 {% block content %}
   

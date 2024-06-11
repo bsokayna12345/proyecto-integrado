@@ -2,7 +2,7 @@ import json
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
-from main.funciones import  desencriptar, encriptar
+
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -56,9 +56,7 @@ class ProductoEditPageView(TemplateView):
                 
                 qsImagenProducto =  producto_id.get_Producto_ImagenProducto.all()
                 key = producto_id.id    
-                secure_data=encriptar(dict(key=str(key)))
-
-                        
+                                        
             contexto = dict(
                 form=form,               
                 secure_data=secure_data,
@@ -88,17 +86,12 @@ class ProductoEditPageView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         try:    
-            key = kwargs.get('key')                                           
-            secure_data = request.POST.get("secure_data", None)          
-            if secure_data  not in ["None"]:          
-                dict_desencriptado = desencriptar(secure_data, {"key":str(key)})             
-                if dict_desencriptado:                              
-                    producto_id = Producto.objects.filter(id=key).first() 
-                    form = ProductoForm(request.POST, instance=producto_id)
-                    form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))
-                    key = key
-                else :
-                    raise NameError("los datos están corruptos")
+            key = kwargs.get('key')                                                               
+            if key is not None:                                                      
+                producto_id = Producto.objects.filter(id=key).first() 
+                form = ProductoForm(request.POST, instance=producto_id)
+                form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))
+                key = key             
             else:
                 form = ProductoForm(request.POST)                 
                 form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))   
@@ -152,20 +145,22 @@ class SubirImagen(TemplateView):
 
     def post(self, request, *args, **kwargs):
         try:               
-            key_producto = kwargs.get('key_producto')                                         
-            secure_data = request.POST.get("secure_data", None)          
-            if secure_data  not in ["None"]:          
-                dict_desencriptado = desencriptar(secure_data, {"key":str(key_producto)})             
-                if dict_desencriptado:                              
-                    producto_id = Producto.objects.filter(id=key_producto).first() 
-                    form_imagen = ImagenForm(request.POST, request.FILES)    
-                    if form_imagen.is_valid():                            
-                        ImagenProducto(
-                            producto_id=producto_id,
-                            imagen=form_imagen.cleaned_data['imagen']
-                        ).save()
-                else :
-                    raise NameError("los datos están corruptos")                          
+            key_producto = kwargs.get('key_producto')                                                    
+            if key_producto is not None:                     
+                producto_id = Producto.objects.filter(id=key_producto).first() 
+                form_imagen = ImagenForm(request.POST, request.FILES)    
+                if form_imagen.is_valid():                            
+                    ImagenProducto(
+                        producto_id=producto_id,
+                        imagen=form_imagen.cleaned_data['imagen']
+                    ).save()
+                    request.session["add_contexto"]=dict(
+                    toast=dict(
+                        titulo="Guardar",
+                        tipo="success",
+                        mensaje='Los datos se han guardado correctamente',
+                    ) 
+               )                               
             return redirect(reverse('administracion:producto_edit', kwargs=dict(key=key_producto)))        
             
         except Exception as Err:

@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'main',
     'administracion',
     'cliente',
-    'paypal.standard.ipn',
+    'rest_framework',    
     
 
 ]
@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cliente.contexto_categorias.categorias_disponibles',
+                'cliente.contexto_carrito.carrito_unidades',
             ],
         },
     },
@@ -177,3 +178,5 @@ if DEBUG:
     EMAIL_FILE_PATH= os.path.join(BASE_DIR, 'sent_email')
 else:
     pass
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'

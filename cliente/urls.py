@@ -5,7 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from cliente import views
 from cliente.carritoViews import CarritoListPageView, anadirAlCarrito
-from cliente.checkoutViews import CheckOut, PaymentFailed, PaymentSuccessful
+
+from cliente.checkoutViews import CapturarOdernPaypal, CrearOrden
 from cliente.inicioViews import ProductoDetalle, ProductoListPageView
 from cliente.loginViews import LoginView, logout_view
 from cliente.perfilUsuarioViews import  PerfileUsuarioView
@@ -23,9 +24,7 @@ urlpatterns = [
     path('perfil-usuario',PerfileUsuarioView.as_view(), name='perfil_usuario_edit'),
     path('registro-usuario',RegistroUsuarioView.as_view(), name='registro_usuario'),    
     path('login',LoginView.as_view(), name='login'),    
-    path('logout',logout_view, name='logout'),
-    path('checkout/', CheckOut, name='checkout'),
-    path('payment-success/', PaymentSuccessful, name='payment-success'),
-    path('payment-failed/', PaymentFailed, name='payment-failed'), 
-  
+    path('logout',logout_view, name='logout'),   
+    path('api/orders/', CrearOrden.as_view(),),
+    path('api/orders/<order_id>/capture', CapturarOdernPaypal.as_view(),),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
