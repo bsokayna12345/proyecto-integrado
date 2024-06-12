@@ -33,8 +33,11 @@ SECRET_KEY = 'django-insecure-sp9k9w5+il#m=-g&iia#(w!n28d=z=6@m&&np*&*--%qm_0ejc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+# CORS_ALLOWED_ORIGINS = [
+#     "*",
+# ]
 
 # Application definition
 
@@ -44,19 +47,19 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',    
+    'django.contrib.staticfiles',
+    'rest_framework',
+    # "corsheaders",
     'fontawesomefree',
     'main',
     'administracion',
     'cliente',
-    'rest_framework',    
-    
-
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -169,9 +172,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.example.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@example.com'
-EMAIL_HOST_PASSWORD = 'your-email-password'
-DEFAULT_FROM_EMAIL = 'your-email@example.com'
+EMAIL_HOST_USER = 'sokayna@gamil.com'
+EMAIL_HOST_PASSWORD = 'sokayna@gamil.com'
+DEFAULT_FROM_EMAIL = 'sokayna@gamil.com'
 # Emails
 if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"

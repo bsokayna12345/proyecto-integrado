@@ -17,7 +17,7 @@
           
 {% endblock cesta %}
 
-<form  method="post" class="form-floating" action="{% url 'administracion:producto_edit' key=form.instance.id %}">    
+<form  method="post" class="form-floating" action="{% url 'administracion:producto_new' %}">    
     {% csrf_token %} 
     <input type="hidden" name="secure_data" value="{{secure_data}}"/>      
     <div class="card mt-5">
@@ -172,7 +172,7 @@
           <h5 class="modal-title" id="staticBackdropLabel">Eliminar Producto: {{form.instance.id}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form  method="post" class="form-floating" actions="{% url 'administracion:producto_edit' key=form.instance.id %}">   
+        <form  method="post" class="form-floating" actions="{% url 'administracion:producto_new' %}">   
             {% csrf_token %} 
             <input type="hidden" name="secure_data" value="{{secure_data}}"/>      
             <div class="modal-body">            

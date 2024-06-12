@@ -13,7 +13,7 @@
 
 {% block content %} 
 <div class="card mt-5" align="center">        
-  <form actions="{% url 'administracion:login' %}" method="POST">
+  <form action="{% url 'administracion:login' %}" method="POST">
     {% csrf_token %} 
     <div class="col-md-3">
       <div class="form-floating">                                    
@@ -27,7 +27,16 @@
           {{form.password}}                        
           <label for="{{form.password.id_for_label}}">{{form.password.label}}</label>
           <h5 class="small">{{form.password.errors}} </h5>                  
-      </div>      
+      </div>
+    {% if form.errors %}
+      <div class="error">
+          <ul>
+              {% for error in form.non_field_errors %}
+                  <li style="color:red;">{{ error }}</li>
+              {% endfor %}
+          </ul>
+      </div>
+  {% endif %}       
       <button class="w-100 btn btn-lg btn-primary" type="submit">inicara sesión</button>
       <a href="{% url 'administracion:registro_usuario' %}" class="w-100 btn btn-lg btn-secondary">registrar</a>      
     </div>

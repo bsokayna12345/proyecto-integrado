@@ -46,7 +46,7 @@ class PerfileUsuarioView(TemplateView):
             perfil_id = Perfil.objects.filter(user_id=get_user_model().objects.get(id=request.user.id)).first()
             form = PerfilEditForm(request.POST, user=request.user)
             if form.is_valid():
-                with db.ransaction.atomic():
+                with db.transaction.atomic():
                     usuario_id = perfil_id.user_id
                     usuario_id.first_name = form.cleaned_data['nombre']
                     usuario_id.last_name = form.cleaned_data['apellido']

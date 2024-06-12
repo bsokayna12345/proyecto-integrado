@@ -1,4 +1,5 @@
 import datetime
+from django.utils import timezone
 from django import db
 from django.shortcuts import render , redirect
 from django.urls import reverse
@@ -28,6 +29,9 @@ class LoginView(TemplateView):
         try:                
             form = LoginForm()             
             contexto = self.contexto(request, form=form)
+            if request.session.get("add_contexto", None) is not None:
+                contexto.update(request.session["add_contexto"])
+                del request.session["add_contexto"]
             return render(request, self.template_name, contexto)
         
         except Exception as Err:            
@@ -40,37 +44,49 @@ class LoginView(TemplateView):
                 if usuario_id is not None:
                     # comprobar si el usuario esta bloqueado
                     perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
-                    if perfil_id.bloqueado:
-                        fecha = str(perfil_id.fecha_bloqueo)   
-                        new_dt = fecha[:19]
-                        fecha = datetime.strptime(new_dt, "%Y-%m-%d %H:%M:%S")
-                        if fecha + datetime.timedelta(minutes=1) < datetime.now():
+                    if perfil_id.bloqueado:                       
+                        fecha = perfil_id.fecha_bloqueo
+                        if fecha + datetime.timedelta(minutes=1) < timezone.now():
                             perfil_id.bloqueado = False                                
-                            perfil_id.count = 0
+                            perfil_id.contador = 0
                             perfil_id.fecha_bloqueo = None
-                            perfil_id.save() 
-                            return redirect(('administracion:login'))    
-                        #TODO mensaje de que el usuario es blequeado                       
+                            perfil_id.save()                    
+                            return redirect(('administracion:login'))                             
                     login(request, usuario_id)
                     return redirect('administracion:producto_list')                    
                 else:
                     # usuario None
                     usuario_id = get_user_model().objects.filter(email=form.cleaned_data['email']).first()
                     if usuario_id:
-                        perfil_id = Perfil.objects.filter(user_id=usuario_id)   
-                        contador_intentos = perfil_id.count
+                        perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
+                        contador_intentos = perfil_id.contador
                         if contador_intentos > 3:
                             perfil_id.bloqueado = True
-                            perfil_id.fecha_bloqueo = datetime.now()
+                            perfil_id.fecha_bloqueo = timezone.now()
                             perfil_id.save()
+                            request.session["add_contexto"]=dict(
+                                toast=dict(
+                                    titulo="Iniciar session",
+                                    tipo="Info",
+                                    mensaje="El usuario esta bloqueado intentalo más tarde",
+                                    ) 
+                                )
                         else:
                             contador_intentos += 1
-                            perfil_id.count = contador_intentos
+                            perfil_id.contador = contador_intentos
                             perfil_id.save()
+                            request.session["add_contexto"]=dict(
+                                toast=dict(
+                                    titulo="Iniciar session",
+                                    tipo="Info",
+                                    mensaje="Introduce contaseña o correo corrito ",
+                                    ) 
+                                )                           
                     else:
                         # no existe el usuarrio 
-                        #TODO mensaje de error en el coreo o la contraseña
-                        return redirect(('administracion:login'))                                                                                                                                        
+                        form.add_error(None, "El correo electrónico o la contraseña son incorrectos.")  
+                        contexto = self.contexto(request, form=form)
+                        return render(request, self.template_name, contexto)                                                                                                                                            
             return redirect(('administracion:login'))
         except Exception as Err:
             return Err
