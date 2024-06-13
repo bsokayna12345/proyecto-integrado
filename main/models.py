@@ -55,15 +55,12 @@ class Producto(models.Model):
     iva = models.DecimalField(default=0.21, decimal_places=2, max_digits=5, validators=[MinValueValidator(0.00)])
     desccripcion = models.TextField(null=True, blank=True)    
     en_oferta = models.BooleanField(default=False)
-    precio_oferta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    precio_oferta = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)], null=True, blank=True)
     subcategoria_id = models.ForeignKey(db_column='sucategoria_id', to=SubCategoria, on_delete=models.CASCADE, related_name='get_SubCategoria_Producto', verbose_name=_("SubCategoria"))    
     marca_id = models.ForeignKey(db_column='marca_id', to=Marca, on_delete=models.CASCADE, related_name='get_Marca_Producto', verbose_name=_("Marca"))
     
     def __str__(self) -> str:
-        return self.nombre
-    
-    def precio_final(self):
-        return self.precio_oferta if self.en_oferta and self.precio_oferta else self.precio
+        return self.nombre   
     
     class Meta:
         db_table = "producto"

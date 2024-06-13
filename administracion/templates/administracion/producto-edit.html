@@ -17,9 +17,8 @@
           
 {% endblock cesta %}
 
-<form  method="post" class="form-floating" action="{% url 'administracion:producto_new' %}">    
-    {% csrf_token %} 
-    <input type="hidden" name="secure_data" value="{{secure_data}}"/>      
+<form  method="post" class="form-floating" action="{% url 'administracion:producto_edit' key=form.instance.id %}">    
+    {% csrf_token %}          
     <div class="card mt-5">
         <h5 class="card-title">Añadir Producto:</h5>
         <div class="card-body">                    
@@ -47,43 +46,58 @@
                 </div>
             </div>
             <div class="row">                
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-floating">
                         {{form.nombre}}                        
                         <label for="{{form.nombre.id_for_label}}">{{form.nombre.label}}</label>
                         <h5 class="small">{{form.nombre.errors}} </h5>                  
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-floating">
                         {{form.unidades}}                        
                         <label for="{{form.unidades.id_for_label}}">{{form.unidades.label}}</label>
                         <h5 class="small">{{form.unidades.errors}} </h5>                  
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <div class="form-floating">
                         {{form.precio}}                        
                         <label for="{{form.precio.id_for_label}}">{{form.precio.label}}</label>
                         <h5 class="small">{{form.precio.errors}} </h5>                  
                     </div>
                 </div>
-                <div class="col-md-3">
+               
+                 
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="form-floating">                                         
                         {{form.iva}}                        
                         <label for="{{form.iva.id_for_label}}">{{form.iva.label}}</label>
                         <h5 class="small">{{form.iva.errors}} </h5>                  
                     </div>
                 </div>
-            </div>                                  
+                <div class="col-md-1">
+                    <div class="form-floating">                                                               
+                        {{form.en_oferta}}                                                                  
+                        <h5 class="small">{{form.en_oferta.errors}} </h5>                                          
+                    </div>
+                </div>  
+                 <div class="col-md-4">
+                    <div class="form-floating">                                         
+                        {{form.porcentaje}}                                              
+                        <h5 class="small">{{form.porcentaje.errors}} </h5>                  
+                    </div>
+                </div>   
+            </div>
         </div>
     </div> 
     <div class="card mt-2">                
             <div class="col-md-12">
                 <div class="form-floating">                                      
                     {{form.desccripcion}}                        
-                    <label for="{{form.desccripcion.id_for_label}}">{{form.desccripcion.label}}</label>
-                            
+                    <label for="{{form.desccripcion.id_for_label}}">{{form.desccripcion.label}}</label>                            
                 </div>
             </div>                     
     </div>
@@ -101,22 +115,17 @@
                 <div class="row">      
                 {% for imagen_id in qsImagenProducto %}     
                     <div class="col-md-4">
-                    <a href="" style="text-decoration: none; color: #5a5a5a;">
-                    <div class="card mb-4 box-shadow">
-                        <img class="card-img-top" src="{{ imagen_id.imagen.url }}" style="height: 225px; width: 100%; display: block;" data-holder-rendered="true">                            
-                        <div class="card-body">                           
-                            <div class="d-flex justify-content-between align-items-center">                               
-                               <button type="button" class="btn btn-danger"  data-bs-toggle="tooltip" data-bs-placement="bottom" title="eliminar imagen"> <i class="bi bi-trash3"></i></button>
-                                <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked>
-                                <label class="form-check-label" for="flexSwitchCheckChecked"></label>
-                                </div>
-                            </div>
-                           
-                        </div>                
-                    </div>                
-                    </a>
-                    </div>            
+                    
+                        <div class="card mb-4 box-shadow">
+                            <img class="card-img-top" src="{{ imagen_id.imagen.url }}" style="height: 225px; width: 100%; display: block;" data-holder-rendered="true">                            
+                            <div class="card-body">                           
+                                <div class="d-flex justify-content-end ">                               
+                                <button type="button" class="btn btn-danger"  data-bs-toggle="modal" data-bs-placement="bottom"  data-bs-target="#eliminar_imagen_id_{{imagen_id.id}}" title="eliminar imagen"> <i class="bi bi-trash3"></i></button>                               
+                                                            
+                                </div>                           
+                            </div>                
+                        </div>                                  
+                    </div>                     
                 {% endfor %}                   
                 </div>
             </div>                       
@@ -125,7 +134,7 @@
     <div class="card mt-2">
         <div class="row">
             <div class="form-actions" align="center">
-                <button type="submit" class="col-md-1 btn btn-success" name="comando" value="guardar">Guardar</button>
+                <button type="submit" class="col-md-2 btn btn-success" name="comando" value="guardar">Guardar</button>
                 <a href="{% url 'administracion:producto_list' %}">
                     <button type="button" class="col-md-1 btn btn-secondary">Volver</button>              
                 </a>                            
@@ -148,11 +157,21 @@
             <h5 class="modal-title" id="staticBackdropLabel">Añadir Imagen</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body">
-            <input type="hidden" name="secure_data" value="{{secure_data}}"/>  
+        <div class="modal-body">           
             {% csrf_token %}
-            {{form_imagen.imagen}}        
-            
+           
+            <div class="col-md-3">
+                <div class="form-floating">                                                               
+                    {{form_imagen.imagen}}                                                                                  
+                    <h5 class="small">{{form_imagen.imagen.errors}} </h5>      
+
+                </div>
+            </div>  
+            <div class="col">                    
+                <label for="{{form_imagen.imagen_principal.id_for_label}}">{{form_imagen.imagen_principal.label}}</label>                                                                       
+                {{form_imagen.imagen_principal}}                                                                                 
+                <h5 class="small">{{form.imagen_principal.errors}} </h5>                                                        
+            </div>                                         
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -164,7 +183,7 @@
 </form>    
 {% endif %}
 
-  <!-- Modal -->
+  <!-- Modal eliminar producto -->
   <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -172,9 +191,8 @@
           <h5 class="modal-title" id="staticBackdropLabel">Eliminar Producto: {{form.instance.id}}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <form  method="post" class="form-floating" actions="{% url 'administracion:producto_new' %}">   
-            {% csrf_token %} 
-            <input type="hidden" name="secure_data" value="{{secure_data}}"/>      
+        <form  method="post" class="form-floating" action="{% url 'administracion:producto_edit' key=form.instance.id %}">   
+            {% csrf_token %}                
             <div class="modal-body">            
                 {{form.instance.nombre}}- marca: {{form.instance.marca_id}}-para: {{form.instance.subcategoria_id}}
             </div>        
@@ -187,10 +205,51 @@
     </div>
   </div>
 
+  {% for imagen_id in qsImagenProducto %}  
+<!-- Modal eliminar Imagen -->   
+<div class="modal fade" id="eliminar_imagen_id_{{imagen_id.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminar_imagen_id_{{imagen_id.id}}">Eliminar Imagen  del Producto: {{form.instance.id}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form  method="post" class="form-floating" action="{% url 'administracion:eliminar_imagen' key_imagen=imagen_id.id key_producto=form.instance.id %}">   
+                {% csrf_token %}                
+                <div class="modal-body">            
+                    <p>"¿Estás seguro de que deseas eliminar esta imagen?"</p>
+                </div>        
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>         
+                    <button type="submit" class="btn btn-danger" name="comando" value="eliminar">Confirmar</button>            
+                </div>
+            </form>      
+        </div>
+    </div>
+</div> 
+{% endfor %}
+
 {% endblock content %}
 {% block script %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{% static 'administracion/js/select-ajax.js' %}"></script>
+<script>
+    var enOfertaCheckbox = document.getElementById('id_en_oferta');
+    var porcentajeInput = document.getElementById('id_porcentaje');
+
+    // Ocultar el campo de porcentaje inicialmente
+    porcentajeInput.style.display = 'none';
+
+    // Agregar un evento de escucha al checkbox "en oferta"
+    enOfertaCheckbox.addEventListener('change', function() {
+        // Si el checkbox está marcado, mostrar el campo de porcentaje; de lo contrario, ocultarlo
+        if (this.checked) {
+            porcentajeInput.style.display = 'block';           
+        } else {
+            porcentajeInput.style.display = 'none';
+        }
+    });
+</script>
 {% endblock script %}
   
   

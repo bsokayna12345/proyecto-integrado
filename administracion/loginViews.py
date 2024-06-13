@@ -3,7 +3,8 @@ from django.utils import timezone
 from django import db
 from django.shortcuts import render , redirect
 from django.urls import reverse
-from django.contrib.auth import logout, get_user_model
+from django.contrib.auth import logout
+from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
@@ -56,7 +57,8 @@ class LoginView(TemplateView):
                     return redirect('administracion:producto_list')                    
                 else:
                     # usuario None
-                    usuario_id = get_user_model().objects.filter(email=form.cleaned_data['email']).first()
+                    usuario_email = form.cleaned_data['email']
+                    usuario_id = User.objects.filter(email=usuario_email).first()
                     if usuario_id:
                         perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
                         contador_intentos = perfil_id.contador

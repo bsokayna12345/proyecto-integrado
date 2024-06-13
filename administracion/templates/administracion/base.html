@@ -46,20 +46,20 @@
       <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="col-md-3 col-lg-2 me-0 px-3">
+      <div class="col-md-5 col-lg-1 me-0 px-3">
           <div class="flex-shrink-0 dropdown">
             <a href="#" class="d-block link-light text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
               <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
             </a>
-          <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">          
-            <li><a class="dropdown-item"href="{% url 'administracion:perfil_usuario' %}">Perfil</a></li>
-            <li><hr class="dropdown-divider"></li>
-              {% if  user.is_authenticated %}      
-                <li><a class="dropdown-item" href="{% url 'administracion:logout' %}">Cerrar sesión</a></li>
-              {% else %}            
-                <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
-              {% endif %}
-          </ul>
+            <ul class="dropdown-menu text-small shadow show" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">          
+              <li><a class="dropdown-item"href="{% url 'administracion:perfil_usuario' %}">Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+                {% if  user.is_authenticated %}      
+                  <li><a class="dropdown-item" href="{% url 'administracion:logout' %}">Cerrar sesión</a></li>
+                {% else %}            
+                  <a class="nav-link px-3" href="{% url 'administracion:login' %}">Iniciar sesión</a>
+                {% endif %}
+            </ul>
         </div>        
       </div>         
     </header>

@@ -26,7 +26,7 @@
                                 <div class="mb-5">
                                     <h3 class="h4 font-weight-bold text-theme">Iniciar Session</h3>                                   
                                 </div>
-                                <form actions="{% url 'cliente:login' %}" method="POST">
+                                <form action="{% url 'cliente:login' %}" method="POST">
                                      {% csrf_token %} 
                                   <div class="col">
                                     <div class="form-floating">                                    

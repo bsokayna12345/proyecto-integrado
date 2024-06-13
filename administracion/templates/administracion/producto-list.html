@@ -32,7 +32,9 @@
           <th>sub categoria</th>
           <th>marca</th>
           <th>nombre</th>
-          <th>precio</th>          
+          <th>precio</th>
+          <th>precio iva</th>
+          <th>precio oferta</th>          
         </tr>
     </thead>
     <tbody>
@@ -47,8 +49,10 @@
         <td>{{producto.categoria_id}}</td>
         <td>{{producto.subcategoria_id}}</td>
         <td>{{producto.marca_id}}</td>
-        <td>{{producto.nombre}}</td>
-        <td>{{producto.precio}}</td>      
+        <td>{{producto.nombre}}</td>        
+        <td>{{producto.precio}}</td>   
+        <td>{{producto.precio_con_iva}}</td>    
+        <td>{{producto.precio_oferta}}</td>  
        </tr> 
       {% endfor %}              
     </tbody>

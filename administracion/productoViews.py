@@ -1,4 +1,6 @@
+from decimal import Decimal
 import json
+from django import db
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
@@ -11,7 +13,7 @@ from administracion.productoForms import ImagenForm, ProductoForm
 
 # Create your views here.
 from django.shortcuts import render
-
+@method_decorator(login_required(login_url='administracion:login'), name='dispatch')  
 class ProductoListFilterPageView(TemplateView):
     """ lista de producto  """
     template_name='administracion/producto-list.html'
@@ -36,15 +38,91 @@ class ProductoListFilterPageView(TemplateView):
         return super().post(request, *args, **kwargs)
 
 @method_decorator(login_required(login_url='administracion:login'), name='dispatch')    
+class ProductoAddPageView(TemplateView):
+    """  añadir producto """
+    template_name ="administracion/producto-add.html"    
+    def contexto(self, request, form:ProductoForm): 
+        try:
+            contexto = dict(
+                form=form
+            )
+            return contexto
+        except Exception as Err:
+            print(Err)
+            return Err
+    
+    def get(self, request, *args, **kwargs):
+        contexto = dict()
+        try:   
+            form = ProductoForm()                                          
+            contexto = self.contexto(request, form=form)       
+            if request.session.get("add_contexto", None) is not None:
+                contexto.update(request.session["add_contexto"])
+                del request.session["add_contexto"]
+         
+            return render(request, self.template_name, contexto)
+        except Exception as Err:
+            return Err     
+    
+    def post(self, request, *args, **kwargs):
+        try:                 
+            form = ProductoForm(request.POST)
+            form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))                                              
+            comando = request.POST.get('comando', None)            
+            if comando == 'guardar':
+                with db.transaction.atomic():
+                    if form.is_valid():
+                        form.save()   
+                        producto_id = Producto.objects.get(id=form.instance.id)                                         
+                        # calcular al precio con iva 
+                        precio = form.cleaned_data["precio"]  # Precio del producto
+                        iva = form.cleaned_data["iva"]                        
+                        precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
+                        producto_id.precio_con_iva = precio_con_iva                 
+                        # si tengo producto de oferta  
+                        if form.cleaned_data['en_oferta'] == True:                                            
+                            porcentaje = form.cleaned_data['porcentaje']
+                            porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                            precio_oferta = Decimal(str(precio)) * (Decimal('1') - porcentaje_oferta)                                          
+                            producto_id.precio_oferta = precio_oferta                        
+                        producto_id.save()
+                        titulo='Guardar'
+                        tipo='success'
+                        mensaje='Los datos se han guardado correctamente'
+                    else:
+                        titulo='Guardar'
+                        tipo='Error'
+                        mensaje='Los datos No se han guardado'
+                        raise ValueError("El formulario no es válido")
+                    request.session["add_contexto"]=dict(
+                        toast=dict(
+                            titulo=titulo,
+                            tipo=tipo,
+                            mensaje=mensaje,
+                        ) 
+                )                    
+            return redirect(reverse('administracion:producto_edit', kwargs=dict(key=form.instance.id)))        
+            
+        except Exception as Err:
+             #request.session["add_contexto"]["toast"]["mensaje"].args
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje
+                    )         
+                )
+            return redirect(reverse('administracion:producto_list')) 
+
+@method_decorator(login_required(login_url='administracion:login'), name='dispatch')    
 class ProductoEditPageView(TemplateView):
     """ editar o añadir producto """
     template_name ="administracion/producto-edit.html"
     def contexto(self, request,producto_id:Producto): 
         try:  
-            key = None 
-            form = ProductoForm()
-            form_imagen = ImagenForm()
-            secure_data = None
+                    
+            form_imagen = ImagenForm()            
             qsImagenProducto = None
             if producto_id is not None:                       
                 form = ProductoForm(instance=producto_id, initial=dict(
@@ -57,8 +135,6 @@ class ProductoEditPageView(TemplateView):
                 qsImagenProducto =  producto_id.get_Producto_ImagenProducto.all()
                 key = producto_id.id    
                 secure_data=encriptar(dict(key=str(key)))
-
-                        
             contexto = dict(
                 form=form,               
                 secure_data=secure_data,
@@ -75,53 +151,58 @@ class ProductoEditPageView(TemplateView):
             key = kwargs.get('key', None)            
             if key is not None:   
                 producto_id = Producto.objects.get(id=key)
-            else:
-                producto_id = None                                                   
+                if producto_id is None:              
+                    raise ValueError("No existe este producto")                                              
             contexto = self.contexto(request, producto_id=producto_id)       
             if request.session.get("add_contexto", None) is not None:
                 contexto.update(request.session["add_contexto"])
-                del request.session["add_contexto"]
-         
+                del request.session["add_contexto"]         
             return render(request, self.template_name, contexto)
         except Exception as Err:
             return Err          
 
     def post(self, request, *args, **kwargs):
         try:    
-            key = kwargs.get('key')                                           
-            secure_data = request.POST.get("secure_data", None)          
-            if secure_data  not in ["None"]:          
-                dict_desencriptado = desencriptar(secure_data, {"key":str(key)})             
-                if dict_desencriptado:                              
+            key = kwargs.get('key')                                                        
+            if key  is not None:                                                                                
                     producto_id = Producto.objects.filter(id=key).first() 
                     form = ProductoForm(request.POST, instance=producto_id)
                     form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))
-                    key = key
-                else :
-                    raise NameError("los datos están corruptos")
-            else:
-                form = ProductoForm(request.POST)                 
-                form.fields["subcategoria_id"].queryset = SubCategoria.objects.filter(id=request.POST.get("subcategoria_id"))   
-                
+                 
+            else :
+                raise NameError("los datos están corruptos")                        
             comando = request.POST.get('comando', None)            
             if comando == 'guardar':
-                if form.is_valid():
-                    form.save()
-                    titulo='Guardar'
-                    tipo='success'
-                    mensaje='Los datos se han guardado correctamente'
-                else:
-                    titulo='Guardar'
-                    tipo='Error'
-                    mensaje='Los datos No se han guardado'
-                    raise ValueError("El formulario no es válido")
-                request.session["add_contexto"]=dict(
-                    toast=dict(
-                        titulo=titulo,
-                        tipo=tipo,
-                        mensaje=mensaje,
-                    ) 
-               )
+                with db.transaction.atomic():
+                    if form.is_valid():    
+                        form.save()                            
+                        # calcular al precio con iva 
+                        precio = form.cleaned_data["precio"]  # Precio del producto
+                        iva = form.cleaned_data["iva"]                        
+                        precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
+                        producto_id.precio_con_iva = precio_con_iva                 
+                        # si tengo producto de oferta  
+                        if form.cleaned_data['en_oferta'] == True:                                            
+                            porcentaje = form.cleaned_data['porcentaje']
+                            porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                            precio_oferta = Decimal(str(precio)) * (Decimal('1') - porcentaje_oferta)                                          
+                            producto_id.precio_oferta = precio_oferta                        
+                        producto_id.save()
+                        titulo='Guardar'
+                        tipo='success'                        
+                        mensaje='Los datos se han guardado correctamente'
+                    else:
+                        titulo='Guardar'
+                        tipo='Error'
+                        mensaje='Los datos No se han guardado'
+                        raise ValueError("El formulario no es válido")
+                    request.session["add_contexto"]=dict(
+                        toast=dict(
+                            titulo=titulo,
+                            tipo=tipo,
+                            mensaje=mensaje,
+                        ) 
+                )
             
             if comando == 'eliminar':               
                 producto_id.delete() 
@@ -131,10 +212,10 @@ class ProductoEditPageView(TemplateView):
                     titulo='Eliminar',
                     tipo='Info',
                     mensaje='Se ha eleminado el producto'
-            )    )
-                return redirect(reverse('administracion:producto_list')) 
-           
-            return redirect(reverse('administracion:producto_edit', kwargs=dict(key=form.instance.id)))        
+                    )                       
+                )
+                return redirect(reverse('administracion:producto_list'))            
+            return redirect(reverse('administracion:producto_edit', kwargs=dict(key=key)))        
             
         except Exception as Err:
              #request.session["add_contexto"]["toast"]["mensaje"].args
@@ -152,20 +233,17 @@ class SubirImagen(TemplateView):
 
     def post(self, request, *args, **kwargs):
         try:               
-            key_producto = kwargs.get('key_producto')                                         
-            secure_data = request.POST.get("secure_data", None)          
-            if secure_data  not in ["None"]:          
-                dict_desencriptado = desencriptar(secure_data, {"key":str(key_producto)})             
-                if dict_desencriptado:                              
-                    producto_id = Producto.objects.filter(id=key_producto).first() 
-                    form_imagen = ImagenForm(request.POST, request.FILES)    
-                    if form_imagen.is_valid():                            
-                        ImagenProducto(
-                            producto_id=producto_id,
-                            imagen=form_imagen.cleaned_data['imagen']
-                        ).save()
-                else :
-                    raise NameError("los datos están corruptos")                          
+            key_producto = kwargs.get('key_producto')                                                              
+            if key_producto  is not None:                      
+                producto_id = Producto.objects.filter(id=key_producto).first() 
+                form_imagen = ImagenForm(request.POST, request.FILES)    
+                if form_imagen.is_valid():                            
+                    ImagenProducto(
+                        producto_id=producto_id,
+                        imagen=form_imagen.cleaned_data['imagen']
+                    ).save()
+            else :
+                raise NameError("No existe el producto")                          
             return redirect(reverse('administracion:producto_edit', kwargs=dict(key=key_producto)))        
             
         except Exception as Err:
@@ -179,3 +257,39 @@ class SubirImagen(TemplateView):
                     )         
                 )
             return redirect(reverse('administracion:producto_list')) 
+
+
+class EliminarImagen(TemplateView):
+    """ Eliminar Imagen"""
+    def post(self, request, *args, **kwargs):
+        try:      
+            key_imagen = kwargs.get('key_imagen')         
+            key_producto = kwargs.get('key_producto')                                                              
+            if key_producto  is not None and key_imagen is not None:                      
+                producto_id = Producto.objects.filter(id=key_producto).first() 
+                imagen_id = ImagenProducto.objects.filter(id=key_imagen, producto_id=producto_id).first()  
+                if imagen_id is not None:                            
+                    imagen_id.delete()
+                    request.session["add_contexto"]=dict(
+                    toast=dict(
+                        titulo='Eliminar',
+                        tipo='Info',
+                        mensaje='Se ha eleminado la imagen'
+                        )                       
+                    )
+            else :
+                raise NameError("No existe la imagen en el regitro")                          
+            return redirect(reverse('administracion:producto_edit', kwargs=dict(key=key_producto)))        
+            
+        except Exception as Err:
+             #request.session["add_contexto"]["toast"]["mensaje"].args
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje                    
+                    )         
+                )
+            return redirect(reverse('administracion:producto_list')) 
+        

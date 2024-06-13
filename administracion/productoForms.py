@@ -24,8 +24,13 @@ class ProductoForm(forms.ModelForm):
             attrs={'class':'form-control'}
         )
     )
+    porcentaje = forms.IntegerField(
+        required =False,  
+        min_value=0,  
+        max_value=100, 
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'title':'Introduce porcentaje ejemplo : 5', "style":"display:none;" })
+    )
     
-
     """ Model form de Producto"""
     class Meta:
         model = Producto
@@ -37,13 +42,19 @@ class ProductoForm(forms.ModelForm):
             'iva',          
             'desccripcion',
             'unidades',
+            'en_oferta',
+            "porcentaje",
+            
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'nombre'}),
             'marca_id': forms.Select(attrs={'class':'form-control', 'placeholder':'marca_id'}),
-            'precio': forms.TextInput(attrs={'class':'form-control',}),        
+            'precio': forms.TextInput(attrs={'class':'form-control',}),                   
             'unidades': forms.NumberInput(attrs={'class':'form-control', 'placeholder':'unidades'}),                        
-            'iva': forms.TextInput(attrs={'class':'form-control'}),            
+            'iva': forms.TextInput(attrs={'class':'form-control'}),       
+            'en_oferta': forms.CheckboxInput(attrs={'class': 'form-check',"style": "margin: 10px;  transform: scale(1.5)", 
+                                                     "data-toggle":"tooltip", "data-placement":"left",
+                                                    'title': '¿Está este producto en oferta? Haz clic para marcar esta opción' ,"required":False}),  
             'desccripcion': forms.Textarea(attrs={'class':'form-control',"cols": "40", "rows": "140","style": "height:90px;"}),             
         }
 
@@ -52,7 +63,20 @@ class ImagenForm(forms.ModelForm):
     class Meta:
         model = ImagenProducto
         fields = [ 
-            "imagen"
+            "imagen",
+            "imagen_principal",
         ]
+        widgets = {
+             'imagen_principal': forms.CheckboxInput(attrs={'class': 'form-check',"style": "margin: 10px;  transform: scale(1.5)", 
+                                                     "data-toggle":"tooltip", "data-placement":"left",
+                                                    'title': '!Haz click si Quieres establecer la imagen como una imagen principal.' ,"required":False}),  
+            'imagen': forms.ClearableFileInput(attrs={
+                'class': 'form-control-file',
+                'style': 'margin: 10px;',
+                'data-toggle': 'tooltip',
+                'data-placement': 'left',
+                'title': 'Sube una imagen para el producto'
+            }),
+        }
        
 
