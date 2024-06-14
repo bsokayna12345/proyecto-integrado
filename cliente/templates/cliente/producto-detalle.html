@@ -33,7 +33,7 @@
         </div>
         <div class="col-md-2 d-flex justify-content-center">
             <div class="card mb-4 box-shadow  align-self-center"> 
-              <form action="{% url 'cliente:carrito_edit' key=producto_id.id %}" method="post">        
+              <form action="{% url 'cliente:add_carrito' key_producto=producto_id.id %}" method="post">        
                 {% csrf_token %}                      
                   <div class="input-group">
                     <span class="input-group-text" id="basic-addon1">Cantidad</span>
@@ -43,7 +43,7 @@
                   añadir a la cesta
                 </button>
               </form>
-              <a href="{% url 'cliente:carrito_list' %}" class="btn btn-warning mt-2">
+              <a href="{% url 'cliente:mostrar_carrito' %}" class="btn btn-warning mt-2">
                 Comprar
               </a>                   
             </div>

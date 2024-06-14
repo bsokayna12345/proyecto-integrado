@@ -157,12 +157,13 @@ class Pedido_cabecera(models.Model):
 
 class Pedido_detalle(models.Model):
     id = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=200)
-    producto_id =  models.ForeignKey(to=Producto, on_delete=models.RESTRICT, related_name='get_productos_pedidos')
+    nombre = models.CharField(max_length=200)    
     precio = models.DecimalField(max_digits= 8, decimal_places=2, validators=[MinValueValidator(0.00)])
     unidades = models.PositiveIntegerField()
     descripcion = models.TextField(null=True, blank=True)
     iva = models.DecimalField(max_digits= 8, decimal_places=2,validators=[MinValueValidator(0.00)])
+    producto_id =  models.ForeignKey(to=Producto, on_delete=models.RESTRICT, related_name='get_productos_pedidos')
+    pedido_cabecera_id = models.ForeignKey(Pedido_cabecera, on_delete=models.CASCADE, related_name='detalles')
     
     class Meta:
         db_table = 'pedido_detalle'

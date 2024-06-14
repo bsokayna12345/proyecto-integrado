@@ -93,6 +93,9 @@ class ProductoDetalle(TemplateView):
             key = kwargs.get('key', None)
             producto_id = Producto.objects.get(id=key)
             contexto = self.contexto(request, producto_id)
+            if request.session.get("add_contexto", None) is not None:
+                contexto.update(request.session["add_contexto"])
+                del request.session["add_contexto"]        
             return render(request, self.template_name, contexto)  
         except Exception as Err:
             mensaje = Err.args[0]

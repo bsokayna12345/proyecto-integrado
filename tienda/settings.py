@@ -81,7 +81,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'cliente.contexto_categorias.categorias_disponibles',
-                'cliente.contexto_carrito.carrito_unidades',
+                # 'cliente.contexto_carrito.carrito_unidades',
             ],
         },
     },

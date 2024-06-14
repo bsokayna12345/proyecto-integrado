@@ -7,6 +7,7 @@ from django.contrib.auth import logout, get_user_model
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from administracion.loginForms import LoginForm
 from main.models import Perfil
 
@@ -54,7 +55,8 @@ class LoginView(TemplateView):
                     return redirect('cliente:perfil_usuario')                    
                 else:
                     # usuario None
-                    usuario_id = get_user_model().objects.filter(email=form.cleaned_data['email']).first()
+                    usuario_email = form.cleaned_data['email']
+                    usuario_id = User.objects.filter(email=usuario_email).first()
                     if usuario_id:
                         perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
                         contador_intentos = perfil_id.contador
@@ -103,5 +105,6 @@ def logout_view(request):
     try:
         logout(request)    
         return redirect('cliente:producto_list') 
-    except Exception as Err:        
+    except Exception as Err:   
+        print(Err)     
         return  Err

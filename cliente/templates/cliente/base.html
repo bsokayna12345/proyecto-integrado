@@ -60,11 +60,7 @@
   <header>
     <nav class="navbar navbar-expand-md navbar-dark bg-dark" aria-label="Eighth navbar example">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">AtlasShop</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07"
-          aria-controls="navbarsExample07" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="nav-link" href="#"><img src="/media/imagenes_coroucel/logo.png"  style="padding: 0%;" width="20%" height="20%" alt=""></a>        
         <div class="collapse navbar-collapse" id="navbarsExample07">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
@@ -87,9 +83,9 @@
             </li>
           </ul>          
         <div>        
-          <a class="nav-link  text-light" href="{% url 'cliente:carrito_list' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px;"></i>
-            Cesta
-            <span class="badge text-light  rounded-pill" style="background-color: #F4D03F; font-size: 20px;">{{contador_unidades_carrito}}</span>
+          <a class="nav-link  text-light" href="{% url 'cliente:mostrar_carrito' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px; margin-right: 5px;"></i>
+            
+            <!-- <span class="badge text-light  rounded-pill" style="background-color: #F4D03F; font-size: 20px;">{{contador_unidades_carrito}}</span> -->
           </a>          
         </div>  
           <div class="flex-shrink-0 dropdown">
