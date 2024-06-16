@@ -6,7 +6,7 @@ from main.funciones import  desencriptar, encriptar
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from main.models import Carrito_Detalle, Producto, SubCategoria
+from main.models import  Producto, SubCategoria
 
 
 # Create your views here.
@@ -21,6 +21,7 @@ class ProductoOfertaListPageView(TemplateView):
                        
             for producto_id in qsProducto:
                 producto_id.imagen_p= producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
+                
             contexto = dict(
                 qsProducto=qsProducto,                                                                                         
                 previous_url = request.META.get('HTTP_REFERER')

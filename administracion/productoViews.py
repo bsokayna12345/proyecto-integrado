@@ -20,6 +20,18 @@ class ProductoListFilterPageView(TemplateView):
 
     def contexto(self, request, qsProducto:Producto): #form:formulariofilter
         try:
+            for producto_id in qsProducto:                                                   
+                # calcular al precio con iva 
+                precio = producto_id.precio  # Precio del producto
+                iva = producto_id.iva                       
+                precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
+                producto_id.precio_con_iva = precio_con_iva                 
+                # si tengo producto de oferta  
+                if producto_id.en_oferta == True:                                            
+                    porcentaje = producto_id.porcentaje
+                    porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                    precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta)                                          
+                    producto_id.precio_oferta = precio_oferta                                      
             contexto = dict(
                 qsProducto=qsProducto,
             )
@@ -72,20 +84,7 @@ class ProductoAddPageView(TemplateView):
             if comando == 'guardar':
                 with db.transaction.atomic():
                     if form.is_valid():
-                        form.save()   
-                        producto_id = Producto.objects.get(id=form.instance.id)                                         
-                        # calcular al precio con iva 
-                        precio = form.cleaned_data["precio"]  # Precio del producto
-                        iva = form.cleaned_data["iva"]                        
-                        precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
-                        producto_id.precio_con_iva = precio_con_iva                 
-                        # si tengo producto de oferta  
-                        if form.cleaned_data['en_oferta'] == True:                                            
-                            porcentaje = form.cleaned_data['porcentaje']
-                            porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
-                            precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta)                                          
-                            producto_id.precio_oferta = precio_oferta                        
-                        producto_id.save()
+                        form.save()                          
                         titulo='Guardar'
                         tipo='success'
                         mensaje='Los datos se han guardado correctamente'

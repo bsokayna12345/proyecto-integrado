@@ -6,7 +6,7 @@ from main.funciones import  desencriptar, encriptar
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from main.models import Carrito_Detalle, Producto, SubCategoria
+from main.models import  Producto, SubCategoria
 
 
 # Create your views here.
@@ -60,20 +60,11 @@ class ProductoDetalle(TemplateView):
     template_name='cliente/producto-detalle.html'
 
     def contexto(self, request, producto_id:Producto): #form:formulariofilter
-        try:
-            contador_unidades_carrito = 0
-            if request.user.is_authenticated:
-                qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
-            else:
-                qsCarrito = Carrito_Detalle.objects.filter(session_key=request.session.session_key)
-                if qsCarrito.count() > 0 :
-                    for carrito_id in qsCarrito:
-                        contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades 
+        try:            
             producto_id.imagen_p =  producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
             producto_id.imagenes =  producto_id.get_Producto_ImagenProducto.all()
             contexto = dict(
-                producto_id=producto_id,
-                contador_unidades_carrito=contador_unidades_carrito,
+                producto_id=producto_id,                
             )
             return contexto
         except Exception as Err:

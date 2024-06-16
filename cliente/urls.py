@@ -29,6 +29,6 @@ urlpatterns = [
     path('mostrar-carrito', MostrarCarrito.as_view(), name="mostrar_carrito"),
     path('modificar-carrito/<int:key_producto>', ModificarCarrito.as_view(), name="modificar_carrito"),
     path('producto-ofertas-list', ProductoOfertaListPageView.as_view(), name="oferta_list"),
-    path('producto-ofirta-list/<int:key_categoria>', ProductoOfertaListPageView.as_view(), name="producto_oferta_filter_categoria"),  
+    path('producto-ofirta-list/<int:key_categoria>', ProductoOfertaListPageView.as_view(), name="producto_oferta_filter_categoria"),       
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

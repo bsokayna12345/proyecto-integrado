@@ -1,10 +1,11 @@
 from decimal import Decimal
 import json
 from django.shortcuts import redirect, render
+from django.urls import reverse
 from django.views.generic import FormView, TemplateView
 from django.views import View
 from django import forms
-#
+from django import db
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -53,24 +54,6 @@ class CrearOrden(APIView):
             return err
 
 
-# class CapturarOdernPaypal(APIView):
-    
-#     def post(self, request, *args, **kwargs):
-#         try:
-#             order_id = self.kwargs['order_id']
-#              # Obtener el carrito de la solicitud POST
-#             cart = request.data.get('cart')
-            
-#             # Realizar la captura de la orden en PayPal
-#             response = capture_order(order_id)
-            
-#             # Aquí puedes hacer algo con el carrito, por ejemplo, guardarlo en la base de datos
-            
-#             return Response(response, status=status.HTTP_200_OK)
-#         except Exception as error:
-#             print(error)
-#             return Response({'error': 'error aquí'}, status=status.HTTP_400_BAD_REQUEST)
-@method_decorator(login_required(login_url='administracion:login'), name='dispatch')
 class CapturarOdernPaypal(APIView):
     
     def post(self, request, *args, **kwargs):
@@ -87,36 +70,46 @@ class CapturarOdernPaypal(APIView):
             if response['status'] == 'COMPLETED':
                 # Procesar cada elemento del carrito y guardar en la base de datos
                 productos_comprados = []
-                for key, detalles in carrito.items():
-                    producto = Producto.objects.get(id=key)
-                    unidades = detalles['unidades']
-                    precio = Decimal(detalles['precio'])
-                    precio_oferta = Decimal(detalles['precio_oferta']) if detalles['precio_oferta'] != 'None' else None
-                    total = precio_oferta * unidades if precio_oferta else precio * unidades
-                    # Guardar cada producto comprado en la base de datos
+                with db.transaction.atomic():
                     pedido_cabecera = Pedido_cabecera(
-                        usuario_id=request.user,                        
-                    )
+                            usuario_id=request.user,   
+                            order_id=order_id,                     
+                        )
                     pedido_cabecera.save()
-                    pedido_detalle = Pedido_detalle(
-                        nombre=producto.nombre,
-                        producto=producto,
-                        precio=total,
-                        unidades=unidades,                        
-                        # order_id=order_id,  # Guardar el ID de la orden de PayPal para referencia
-                        pedido_cabecera_id=pedido_cabecera
-                    )
+                    for key, detalles in carrito.items():
+                        producto = Producto.objects.get(id=key)
+                        unidades = detalles['unidades']                   
+                        # Guardar cada producto comprado en la base de datos
+                    
+                        pedido_detalle = Pedido_detalle(
+                            nombre=producto.nombre,
+                            producto_id=producto,
+                            precio=producto.precio,
+                            unidades=unidades, 
+                            porcentaje=producto.porcentaje,
+                            iva=producto.iva,                                               
+                            pedido_cabecera_id=pedido_cabecera,
+                        )
 
-                    pedido_detalle.save()
-                    producto.unidades = producto.unidades - unidades
-                    producto.save                    
-                    productos_comprados.append(pedido_detalle)
-                
-                context = {
-                    'mensaje': 'Pago realizado correctamente',
-                    'productos_comprados': productos_comprados
-                }
-                return render(request, 'pago-hecho.html', context)
+                        pedido_detalle.save()
+                        producto.unidades = producto.unidades - unidades
+                        producto.save                    
+                        productos_comprados.append(pedido_detalle)
+                        # Vaciar el carrito después de una compra exitosa
+                        request.session['carrito'] = {}     
+                        request.session["add_contexto"]=dict(
+                        toast=dict(
+                            titulo='Pago',
+                            tipo='success',
+                            mensaje="El pago si ha realizado correctamente"
+                            )         
+                        )
+
+                    return Response({
+                        'status': 'COMPLETED',
+                        'redirect_url': reverse('cliente:mostrar_carrito'),
+                        'id_pedido_cabecera':pedido_cabecera.id,
+                    }, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'El pago no se completó correctamente'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:

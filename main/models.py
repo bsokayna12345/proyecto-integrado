@@ -49,13 +49,12 @@ class SubCategoria(models.Model):
 class Producto(models.Model):
     id = models.AutoField(db_column="id", primary_key=True, verbose_name=_('ID'))    
     nombre = models.CharField(max_length=200,  )
-    precio = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])
-    precio_con_iva = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])
+    precio = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)])    
     unidades = models.PositiveIntegerField(default=0)
     iva = models.DecimalField(default=0.21, decimal_places=2, max_digits=5, validators=[MinValueValidator(0.00)])
     desccripcion = models.TextField(null=True, blank=True)    
     en_oferta = models.BooleanField(default=False)
-    precio_oferta = models.DecimalField(default=0.00, decimal_places=2, max_digits=8, validators=[MinValueValidator(0.00)], null=True, blank=True)
+    porcentaje = models.PositiveSmallIntegerField(default=0, null=True, blank=True)    
     subcategoria_id = models.ForeignKey(db_column='sucategoria_id', to=SubCategoria, on_delete=models.CASCADE, related_name='get_SubCategoria_Producto', verbose_name=_("SubCategoria"))    
     marca_id = models.ForeignKey(db_column='marca_id', to=Marca, on_delete=models.CASCADE, related_name='get_Marca_Producto', verbose_name=_("Marca"))
     
@@ -120,31 +119,12 @@ class Direccion(models.Model):
         verbose_name_plural ="Direcciones"
 
 
-
-class Carrito_Detalle(models.Model):
-    unidades = models.IntegerField()
-    session_key = models.CharField(max_length=40, null=True, blank=True)
-    user_id = models.ForeignKey(db_column='usuario_id', null=True, blank=True, to=settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name='get_user_carrito')    
-    producto_id = models.ForeignKey(to=Producto , on_delete=models.RESTRICT, related_name='get_producto_carrito')
-    
-    
-    class Meta:
-        db_table = 'carrito_Detalle'
-        verbose_name = 'Carrito detalla'
-        verbose_name_plural = 'Carritos Detalles'
-        
-        constraints = [
-            models.UniqueConstraint(name='unique_user_producto_id', fields=['user_id', 'producto_id'])
-        ]
-    def __str__(self):
-        return f"{self.user_id}-{self.producto_id}-{self.unidades}"
-    
-
 class Pedido_cabecera(models.Model):
     id = models.AutoField(primary_key=True)
     usuario_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT)    
     fecha=models.DateField(auto_now_add=True)
     direccion_entrega_id = models.ForeignKey(to=Direccion, null=True, on_delete=models.RESTRICT, related_name='get_direccion_e_pedidoCabecera')    
+    order_id=models.CharField(max_length=200)
 
     class Meta:
         db_table = 'pedido_cabecera'
@@ -162,8 +142,11 @@ class Pedido_detalle(models.Model):
     unidades = models.PositiveIntegerField()
     descripcion = models.TextField(null=True, blank=True)
     iva = models.DecimalField(max_digits= 8, decimal_places=2,validators=[MinValueValidator(0.00)])
+    porcentaje = models.PositiveSmallIntegerField(default=0, null=True, blank=True)
     producto_id =  models.ForeignKey(to=Producto, on_delete=models.RESTRICT, related_name='get_productos_pedidos')
     pedido_cabecera_id = models.ForeignKey(Pedido_cabecera, on_delete=models.CASCADE, related_name='detalles')
+       
+    
     
     class Meta:
         db_table = 'pedido_detalle'

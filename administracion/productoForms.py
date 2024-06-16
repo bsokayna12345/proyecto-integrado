@@ -43,8 +43,7 @@ class ProductoForm(forms.ModelForm):
             'desccripcion',
             'unidades',
             'en_oferta',
-            "porcentaje",
-            
+            "porcentaje",            
         ]
         widgets = {
             'nombre': forms.TextInput(attrs={'class':'form-control', 'placeholder':'nombre'}),

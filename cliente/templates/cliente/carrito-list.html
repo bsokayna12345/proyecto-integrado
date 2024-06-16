@@ -1,143 +1,156 @@
 {% extends 'cliente/base.html' %}
-{% load static %}
-{% load i18n %}
-
-{% block title %}
-Carrito  
-{% endblock title %}
-
-
+{% load static %} {% load i18n %}
+{% block title %} Carrito {% endblock title %} 
 {% block link %}
-    <style>
-            body{margin-top:20px;}
-        .cart-item-thumb {
-            display: block;
-            width: 10rem
-        }
+<style>
+  body {
+    margin-top: 20px;
+  }
 
-        .cart-item-thumb>img {
-            display: block;
-            width: 50%
-        }
+  .cart-item-thumb {
+    display: block;
+    width: 10rem;
+  }
 
-        .product-card-title>a {
-            color: #222;
-        }
+  .cart-item-thumb>img {
+    display: block;
+    width: 50%;
+  }
 
-        .font-weight-semibold {
-            font-weight: 600 !important;
-        }
+  .product-card-title>a {
+    color: #222;
+  }
 
-        .product-card-title {
-            display: block;
-            margin-bottom: .75rem;
-            padding-bottom: .875rem;
-            border-bottom: 1px dashed #e2e2e2;
-            font-size: 1rem;
-            font-weight: normal;
-        }
+  .font-weight-semibold {
+    font-weight: 600 !important;
+  }
 
-        .text-muted {
-            color: #888 !important;
-        }
+  .product-card-title {
+    display: block;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px dashed #e2e2e2;
+    font-size: 1rem;
+    font-weight: normal;
+  }
 
-        .bg-secondary {
-            background-color: #f7f7f7 !important;
-        }
+  .text-muted {
+    color: #888 !important;
+  }
 
-        .accordion .accordion-heading {
-            margin-bottom: 0;
-            font-size: 1rem;
-            font-weight: bold;
-        }
-        .font-weight-semibold {
-            font-weight: 600 !important;
-        }
-    </style>
-{% endblock link %}
+  .bg-secondary {
+    background-color: #f7f7f7 !important;
+  }
 
+  .accordion .accordion-heading {
+    margin-bottom: 0;
+    font-size: 1rem;
+    font-weight: bold;
+  }
 
-{% block caroucel %}
-  
+  .font-weight-semibold {
+    font-weight: 600 !important;
+  }
+</style>
+{% endblock link %} 
+{% block caroucel %} 
 {% endblock caroucel %}
-  
 {% block content %}
 
 <div class="container pb-5 mt-5 mt-md-n3">
-    <div class="row">
-        <div class="col-xl-9 col-md-8">            
-            <h2 class="h6 d-flex flex-wrap justify-content-between align-items-center px-4 py-3 ">
-                <span>Cesta</span>
-                <a class="font-size-sm" href="{% url 'cliente:producto_list' %}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left" style="width: 1rem; height: 1rem;"><polyline points="15 18 9 12 15 6"></polyline>
-                    </svg>Seguir comprando</a></h2>                                    
-            <!-- Item-->            
-        {% for producto_id, item in carrito.items %}
-            <form action=" {% url 'cliente:modificar_carrito' key_producto=item.id %}"  method="post">
-                {% csrf_token %}
-                <div class="d-sm-flex justify-content-between my-4 pb-4 border-bottom">
-                    <div class="media d-block d-sm-flex text-center text-sm-left">
-                        <a class="cart-item-thumb mx-auto mr-sm-4" href=""><img src="{{ item.imagen }}" style="height: 100px; width: 100%;"  alt="Product" ></a> 
-                        <div class="media-body pt-3">
-                            <h3 class="product-card-title font-weight-semibold border-0 pb-0"><a href="#">{{item.nombre}}</a></h3>
-                            <div class="font-size-sm"><span class="text-muted mr-2">Lenses:</span>Chameleon</div>
-                            <div class="font-size-sm"><span class="text-muted mr-2">Frame:</span>Gray / Black</div>
-                            <div class="font-size-lg text-primary pt-2">{{ item.precio }}</div>
-                        </div>
-                    </div>                
-                    <div class="pt-2 pt-sm-0 pl-sm-3 mx-auto mx-sm-0 text-center text-sm-left" style="max-width: 10rem;">
-                        <div class="h4 font-weight-semibold text-center py-3">{{item.precio_total}}</div>
-                        <div class="form-group mb-2">
-                            <label for="quantity3">Cantidad</label>
-                            <input class="form-control form-control-sm" type="number" id="quantity3" name="unidades" value="{{item.unidades}}">
-                        </div>
-                        <button class="btn btn-outline-secondary btn-sm btn-block mb-2" type="submit" name="comando" value="modificar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw mr-1">
-                                <polyline points="23 4 23 10 17 10"></polyline>
-                                <polyline points="1 20 1 14 7 14"></polyline>
-                                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-                            </svg>Modificar la cesta</button>
-                        <button class="btn btn-outline-danger btn-sm btn-block mb-2" type="submit" name="comando" value="eliminar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 mr-1">
-                                <polyline points="3 6 5 6 21 6"></polyline>
-                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                                <line x1="10" y1="11" x2="10" y2="17"></line>
-                                <line x1="14" y1="11" x2="14" y2="17"></line>
-                            </svg>Borrar
-                        </button>
-                    </div>
-                </div>
-            </form>
-            {% endfor %}
-                                                
+  <div class="row">
+    <div class="col-xl-9 col-md-8">
+      <h2 class="h6 d-flex flex-wrap justify-content-between align-items-center px-4 py-3">
+        <span>Cesta</span>
+        <a class="font-size-sm" href="{% url 'cliente:producto_list' %}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="feather feather-chevron-left" style="width: 1rem; height: 1rem">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>Seguir comprando</a>
+      </h2>
+      <!-- Item-->
+      {% for producto_id, item in carrito.items %}
+      <form action=" {% url 'cliente:modificar_carrito' key_producto=item.id %}" method="post">
+        {% csrf_token %}
+        <div class="d-sm-flex justify-content-between my-4 pb-4 border-bottom">
+          <div class="media d-block d-sm-flex text-center text-sm-left">
+            <a class="cart-item-thumb mx-auto mr-sm-4" href=""><img src="{{ item.imagen }}"
+                style="height: 100px; width: 100%" alt="Product" /></a>
+            <div class="media-body pt-3">
+              <h3 class="product-card-title font-weight-semibold border-0 pb-0">
+                <a href="#">{{item.nombre}}</a>
+              </h3>
+              <div class="font-size-sm">
+                <span class="text-muted mr-2">Lenses:</span>Chameleon
+              </div>
+              <div class="font-size-sm">
+                <span class="text-muted mr-2">Frame:</span>Gray / Black
+              </div>
+              <div class="font-size-lg text-primary pt-2">
+                {{ item.precio }}
+              </div>
+            </div>
+          </div>
+          <div class="pt-2 pt-sm-0 pl-sm-3 mx-auto mx-sm-0 text-center text-sm-left" style="max-width: 10rem">
+            <div class="h4 font-weight-semibold text-center py-3">
+              {{item.precio_total_producto_con_iva}}
+            </div>
+            <div class="form-group mb-2">
+              <label for="quantity3">Cantidad</label>
+              <input class="form-control form-control-sm" type="number" id="quantity3" name="unidades"
+                value="{{item.unidades}}" />
+            </div>
+            <button class="btn btn-outline-secondary btn-sm btn-block mb-2" type="submit" name="comando"
+              value="modificar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-refresh-cw mr-1">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+              </svg>Modificar la cesta
+            </button>
+            <button class="btn btn-outline-danger btn-sm btn-block mb-2" type="submit" name="comando" value="eliminar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="feather feather-trash-2 mr-1">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                <line x1="10" y1="11" x2="10" y2="17"></line>
+                <line x1="14" y1="11" x2="14" y2="17"></line>
+              </svg>Borrar
+            </button>
+          </div>
         </div>
-        <input id="cart-items-data" type="hidden"  value="{{cart_items}}">
-        <!-- Sidebar-->
-        <div class="col-xl-3 col-md-4 pt-3 pt-md-0">
-            <h2 class="h6 px-4 py-3 bg-secondary text-center">Subtotal</h2>
-            <div class="h3 font-weight-semibold text-center py-3">{{total_carrito}} €</div>
-            <hr>         
-            
-            {% if  user.is_authenticated %}
-               <div id="paypal-button-container">
-
-               </div>
-            {% else %}       
-            <div class="d-grid">       
-                <a href="{% url 'cliente:login' %}" class="btn px-4 py-2 btn-warning mt-2 text-center">
-                  Realizar el pago
-                </a>    
-                </div>                    
-            {% endif %}
-                         
-            {% comment %} <p id="result-message"></p>          {% endcomment %}
-        </div>
+      </form>
+      {% endfor %}
     </div>
+    <input id="cart-items-data" type="hidden" value="{{cart_items}}" />
+    <!-- Sidebar-->
+    <div class="col-xl-3 col-md-4 pt-3 pt-md-0">
+      <h2 class="h6 px-4 py-3 bg-secondary text-center">Subtotal</h2>
+      <div class="h3 font-weight-semibold text-center py-3">
+        {{total_carrito_con_iva}} €
+      </div>
+      <hr />
+
+      {% if user.is_authenticated %}
+      <div id="paypal-button-container"></div>
+      {% else %}
+      <div class="d-grid">
+        <a href="{% url 'cliente:login' %}" class="btn px-4 py-2 btn-warning mt-2 text-center">
+          Realizar el pago
+        </a>
+      </div>
+      {% endif %} {% comment %}
+      <p id="result-message"></p>
+      {% endcomment %}
+    </div>
+  </div>
 </div>
 
-{% endblock content %}
-
-{% block script %}
+{% endblock content %} {% block script %}
 
 <!-- Initialize the JS-SDK -->
 <script src="https://www.paypal.com/sdk/js?client-id=test" data-sdk-integration-source="developer-studio"></script>
@@ -145,11 +158,11 @@ Carrito
 <script type="module">
   function getCookie(name) {
     let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
       for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        if (cookie.substring(0, name.length + 1) === name + "=") {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;
         }
@@ -158,109 +171,100 @@ Carrito
     return cookieValue;
   }
 
-  const csrftoken = getCookie('csrftoken');
+  const csrftoken = getCookie("csrftoken");
 
   function resultMessage(message) {
-    const resultContainer = document.getElementById('result-message');
+    const resultContainer = document.getElementById("result-message");
     if (resultContainer) {
       resultContainer.innerHTML = message;
-      resultContainer.style.display = 'block';
+      resultContainer.style.display = "block";
     } else {
       alert(message); // Fallback if there is no result container
     }
   }
 
-
-  const cartItemsv = document.getElementById('cart-items-data').value;
+  const cartItemsv = document.getElementById("cart-items-data").value;
   const decodedCartItems = decodeURIComponent(cartItemsv);
   const cartItems = JSON.parse(decodedCartItems);
-    console.log(cartItems)
+  console.log(cartItems);
 
+  window.paypal
+    .Buttons({
+      style: {
+        shape: "rect",
+        layout: "vertical",
+        color: "gold",
+        label: "paypal",
+      },
+      async createOrder() {
+        try {
+          const response = await fetch("api/orders/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+            },
+            body: JSON.stringify({
+              cart: cartItems,
+            }),
+          });
 
-  window.paypal.Buttons({
-    style: {
-      shape: "rect",
-      layout: "vertical",
-      color: "gold",
-      label: "paypal",
-    },
-    async createOrder() {
-      try {
-        const response = await fetch("api/orders/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken
-          },
-          body: JSON.stringify({
-            cart: cartItems,
-          }),
-        });
+          const orderData = await response.json();
 
-        const orderData = await response.json();
+          if (orderData.id) {
+            return orderData.id;
+          }
+          const errorDetail = orderData?.details?.[0];
+          const errorMessage = errorDetail
+            ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
+            : JSON.stringify(orderData);
 
-        if (orderData.id) {
-          return orderData.id;
+          throw new Error(errorMessage);
+        } catch (error) {
+          console.error(error);
+          // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
         }
-        const errorDetail = orderData?.details?.[0];
-        const errorMessage = errorDetail
-          ? `${errorDetail.issue} ${errorDetail.description} (${orderData.debug_id})`
-          : JSON.stringify(orderData);
+      },
+      async onApprove(data, actions) {
+        try {
+          const response = await fetch(`/api/orders/${data.orderID}/capture`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrftoken,
+            },
+            body: JSON.stringify(data),
+          });
 
-        throw new Error(errorMessage);
-      } catch (error) {
-        console.error(error);
-        // resultMessage(`Could not initiate PayPal Checkout...<br><br>${error}`);
-      }
-    },
-    async onApprove(data, actions) {
-      try {
-        const response = await fetch(`/api/orders/${data.orderID}/capture`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken,            
-          },
-          body: JSON.stringify(data)
-        });
+          const orderData = await response.json();
 
-        const orderData = await response.json();
-
-        const errorDetail = orderData?.details?.[0];
-
-        if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
-          return actions.restart();
-        } else if (errorDetail) {
-          throw new Error(`${errorDetail.description} (${orderData.debug_id})`);
-        } else if (!orderData.purchase_units) {
-          throw new Error(JSON.stringify(orderData));
-        } else {
-          const transaction =
-            orderData?.purchase_units?.[0]?.payments?.captures?.[0] ||
-            orderData?.purchase_units?.[0]?.payments?.authorizations?.[0];
+          if (response.ok) {
+            if (orderData.status === "COMPLETED" && orderData.redirect_url) {
+              window.location.href = orderData.redirect_url; // Redirigir a la URL proporcionada
+            } else {
+              throw new Error("Error en el estado del pago");
+            }
+          } else {
+            const errorDetail = orderData?.details?.[0];
+            if (errorDetail?.issue === "INSTRUMENT_DECLINED") {
+              return actions.restart();
+            } else if (errorDetail) {
+              throw new Error(
+                `${errorDetail.description} (${orderData.debug_id})`
+              );
+            } else {
+              throw new Error("Error en la captura del pago");
+            }
+          }
+        } catch (error) {
+          console.error(error);
           resultMessage(
-            `Transaction ${transaction.status}: ${transaction.id}<br>
-            <br>See console for all available details`
-          );
-          console.log(
-            "Capture result",
-            orderData,
-            JSON.stringify(orderData, null, 2)
+            `Sorry, your transaction could not be processed...<br><br>${error}`
           );
         }
-      } catch (error) {
-        console.error(error);
-        resultMessage(
-          `Sorry, your transaction could not be processed...<br><br>${error}`
-        );
-      }
-    },
-  }).render("#paypal-button-container");
+      },
+    })
+    .render("#paypal-button-container");
 </script>
 
 {% endblock script %}
-  
-  
-  
-
-  
