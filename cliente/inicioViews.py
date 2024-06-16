@@ -17,23 +17,14 @@ class ProductoListPageView(TemplateView):
     template_name='cliente/inicio.html'
 
     def contexto(self, request, qsProducto:Producto): #form:formulariofilter
-        try:
-            
-            contador_unidades_carrito = 0   
-
-            if request.user.is_authenticated:
-                qsCarrito = Carrito_Detalle.objects.filter(user_id=request.user)
-            else:
-                qsCarrito = Carrito_Detalle.objects.filter(session_key=request.session.session_key)                                 
-            if qsCarrito.count() > 0 :
-                for carrito_id in qsCarrito:
-                    contador_unidades_carrito = contador_unidades_carrito + carrito_id.unidades                
+        try:            
+                        
             #anadir las imagenes principal al producto
             for producto_id in qsProducto:
                 producto_id.imagen_p= producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
             contexto = dict(
-                qsProducto=qsProducto,                                 
-                contador_unidades_carrito=contador_unidades_carrito,                                         
+                qsProducto=qsProducto,     
+                                                                                              
             )
             return contexto
         except Exception as Err:
@@ -49,6 +40,7 @@ class ProductoListPageView(TemplateView):
      
     def get(self, request, *args, **kwargs):
         key_categoria = kwargs.get('key_categoria', None)
+        comando = kwargs.get("comando", None)
         qsProducto=None
         if key_categoria is not None:
             subcategoria_id = SubCategoria.objects.filter(categoria_id__id=key_categoria).first()

@@ -16,8 +16,7 @@
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
   <!-- Bootstrap icon CSS -->
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
   <!-- Font Awesome CSS -->
   <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
   <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
@@ -70,18 +69,18 @@
               <a class="nav-link" href="#">Lo más vendido</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Ofiratas</a>
+              <a class="nav-link " href="{% url 'cliente:oferta_list' %}" tabindex="-1" aria-disabled="true">Oferatas</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown"
                 aria-expanded="false">Categorías</a>
               <ul class="dropdown-menu" aria-labelledby="dropdown07">
-                {% for categoria in categorias %}
+                {% for categoria in categorias %}                
                 <li><a class="dropdown-item" href="{% url 'cliente:producto_filter_categoria' key_categoria=categoria.id%}">{{ categoria.nombre }}</a></li>
                 {% endfor %}
               </ul>
             </li>
-          </ul>          
+          </ul>                   
         <div>        
           <a class="nav-link  text-light" href="{% url 'cliente:mostrar_carrito' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px; margin-right: 5px;"></i>
             
@@ -92,8 +91,7 @@
               <a href="#" class="d-block link-light text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
                   <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
               </a>
-              <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">                  
-                 
+              <ul class="dropdown-menu text-small shadow " aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-112px, 34px);" data-popper-placement="bottom-end">                                   
                   {% if user.is_authenticated %}     
                       <li><a class="dropdown-item" href="{% url 'cliente:perfil_usuario' %}">Perfil</a></li> 
                       <li><hr class="dropdown-divider"></li>

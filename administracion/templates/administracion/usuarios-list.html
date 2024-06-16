@@ -1,0 +1,60 @@
+{% extends 'administracion/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+Usuarios
+{% endblock title %}
+
+{% block link %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/css/boxicons.min.css" integrity="sha512-pVCM5+SN2+qwj36KonHToF2p1oIvoU3bsqxphdOIWMYmgr4ZqD3t5DjKvvetKhXGc/ZG5REYTT6ltKfExEei/Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+
+<link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css" />
+{% endblock link %}
+
+{% block content %}
+
+<div class="card mt-5">
+    <h5 class="card-header"> Usuarios</h5>
+    <div class="m-2 mt-3">
+      <a href="{% url 'administracion:registro_usuario' %}" class="btn btn-warning">
+        Añadir Usuarios
+      </a> 
+    </div>
+  <div class="card-body">
+    <table id="myTable" class="display">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario_id in qsUsuarios %}
+                <tr>
+                    <td>{{usuario_id.id}}</td>
+                    <td>{{ usuario_id.first_name }}</td>
+                    <td>{{ usuario_id.last_name }}</td>                                    
+                    <td>{{ usuario_id.email }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}
+
+{% block script %}
+<!-- Cargar jQuery desde un CDN diferente -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.0.8/js/dataTables.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            // Aquí puedes agregar configuraciones adicionales si lo deseas
+        });
+    });
+</script>
+{% endblock script %}

@@ -19,9 +19,9 @@ import uuid
 
 class addirAlcarrito(TemplateView):
     """ añadir producto a la cesta """
-
     def post(self, request, *args, **kwargs):
         try:
+            #request.session.flush()
             titulo = ""
             tipo = ""
             mensaje = ""
@@ -47,6 +47,7 @@ class addirAlcarrito(TemplateView):
                     carrito[str(key)] = {
                         'nombre': producto.nombre,
                         'precio': str(producto.precio),  # Almacena como cadena para JSON
+                        'precio_oferta': None if str(producto.precio_oferta) is None else   str(producto.precio_oferta),
                         'unidades': unidades,
                         'imagen': producto.get_Producto_ImagenProducto.first().imagen.url if producto.get_Producto_ImagenProducto.first() else ""
                     }
@@ -93,7 +94,12 @@ class MostrarCarrito(TemplateView):
         for item_id, item in list(carrito.items()):  # Convertimos a lista para modificar el diccionario mientras iteramos
             try:
                 producto = Producto.objects.get(id=item_id)
-                item['precio_total'] = float(item['precio']) * item['unidades']
+                # comprovar si el producto es de oferta 
+                if producto.en_oferta == True:
+                    item['precio_total'] = None if  item['precio_oferta'] is None else float(item['precio_oferta']) * item['unidades']
+                else:
+
+                    item['precio_total'] = float(item['precio']) * item['unidades']
                 item['id'] = producto.id
                 total_carrito += item['precio_total']
             except Producto.DoesNotExist:                
@@ -113,7 +119,10 @@ class MostrarCarrito(TemplateView):
 
         for item_id, item in list(carrito.items()):
             producto = Producto.objects.get(id=item_id)
-            precio_total = float(item['precio']) * item['unidades']
+            if producto.en_oferta:
+                precio_total = float(item['precio_oferta']) * item['unidades']
+            else:
+                precio_total = float(item['precio']) * item['unidades']
             subtotal += precio_total            
             precio_decimal = producto.precio
             precio_float = float(precio_decimal)

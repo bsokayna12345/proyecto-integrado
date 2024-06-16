@@ -27,7 +27,7 @@ class ProductoListFilterPageView(TemplateView):
         except Exception as Err:
             return Err
      
-    def get(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):        
         qsProducto = Producto.objects.all()
         contexto = self.contexto(request, qsProducto)
         if request.session.get("add_contexto", None) is not None:
@@ -83,7 +83,7 @@ class ProductoAddPageView(TemplateView):
                         if form.cleaned_data['en_oferta'] == True:                                            
                             porcentaje = form.cleaned_data['porcentaje']
                             porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
-                            precio_oferta = Decimal(str(precio)) * (Decimal('1') - porcentaje_oferta)                                          
+                            precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta)                                          
                             producto_id.precio_oferta = precio_oferta                        
                         producto_id.save()
                         titulo='Guardar'
@@ -100,7 +100,7 @@ class ProductoAddPageView(TemplateView):
                             tipo=tipo,
                             mensaje=mensaje,
                         ) 
-                )                    
+                     )                    
             return redirect(reverse('administracion:producto_edit', kwargs=dict(key=form.instance.id)))        
             
         except Exception as Err:
@@ -230,17 +230,17 @@ class ProductoEditPageView(TemplateView):
             return redirect(reverse('administracion:producto_list')) 
 
 class SubirImagen(TemplateView):
-
     def post(self, request, *args, **kwargs):
         try:               
-            key_producto = kwargs.get('key_producto')                                                              
+            key_producto = kwargs.get('key_producto', None)                                                              
             if key_producto  is not None:                      
                 producto_id = Producto.objects.filter(id=key_producto).first() 
                 form_imagen = ImagenForm(request.POST, request.FILES)    
                 if form_imagen.is_valid():                            
                     ImagenProducto(
                         producto_id=producto_id,
-                        imagen=form_imagen.cleaned_data['imagen']
+                        imagen=form_imagen.cleaned_data['imagen'],
+                        imagen_principal=form_imagen.cleaned_data['imagen_principal']
                     ).save()
             else :
                 raise NameError("No existe el producto")                          
@@ -257,14 +257,14 @@ class SubirImagen(TemplateView):
                     )         
                 )
             return redirect(reverse('administracion:producto_list')) 
-
+        
 
 class EliminarImagen(TemplateView):
     """ Eliminar Imagen"""
     def post(self, request, *args, **kwargs):
         try:      
-            key_imagen = kwargs.get('key_imagen')         
-            key_producto = kwargs.get('key_producto')                                                              
+            key_imagen = kwargs.get('key_imagen', None)         
+            key_producto = kwargs.get('key_producto', None)                                                              
             if key_producto  is not None and key_imagen is not None:                      
                 producto_id = Producto.objects.filter(id=key_producto).first() 
                 imagen_id = ImagenProducto.objects.filter(id=key_imagen, producto_id=producto_id).first()  
@@ -292,4 +292,3 @@ class EliminarImagen(TemplateView):
                     )         
                 )
             return redirect(reverse('administracion:producto_list')) 
-        

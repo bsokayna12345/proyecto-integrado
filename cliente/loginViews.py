@@ -17,8 +17,11 @@ class LoginView(TemplateView):
     
     def contexto(self, request,form:LoginForm): 
         try:
+            url_anterior = request.META.get('HTTP_REFERER', '/')            
+            # Dividir el path por '/' y obtener la última parte            
             contexto = dict(
-                form=form,                
+                form=form,
+                url_anterior = url_anterior,            
             )
             return contexto
         except Exception as Err:
@@ -38,6 +41,7 @@ class LoginView(TemplateView):
     def post(self, request, *args, **kwargs):
         try:                        
             form = LoginForm(request.POST)  
+            url_anterior = request.POST.get('url_anterior',None )
             if form.is_valid():                               
                 usuario_id = authenticate(username=form.cleaned_data["email"], password=form.cleaned_data["password"])       
                 if usuario_id is not None:
@@ -52,7 +56,11 @@ class LoginView(TemplateView):
                             perfil_id.save()                            
                             return redirect(('cliente:login'))                                                          
                     login(request, usuario_id)
-                    return redirect('cliente:perfil_usuario')                    
+                    if url_anterior is not None:
+                        return redirect(url_anterior) 
+                    else:
+
+                        return redirect('cliente:perfil_usuario')                    
                 else:
                     # usuario None
                     usuario_email = form.cleaned_data['email']

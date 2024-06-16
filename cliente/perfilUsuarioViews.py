@@ -24,7 +24,8 @@ class PerfileUsuarioView(TemplateView):
      
     def get(self, request, *args, **kwargs):
         try:
-            perfil_id = Perfil.objects.filter(user_id=get_user_model().objects.get(id=request.user.id)).first()
+            #TODO hay que controlar si el usuario es no o el usuario no tiene perfil por ejemplo en el caso de que sea sea el usuario admin
+            perfil_id = Perfil.objects.filter(user_id=request.user).first()
             initial_data = {
                 'nombre': perfil_id.user_id.first_name,
                 'apellido': perfil_id.user_id.last_name,
@@ -32,14 +33,23 @@ class PerfileUsuarioView(TemplateView):
                 'email': perfil_id.user_id.email,
             }
             form = PerfilEditForm(initial=initial_data)
-            contexto = self.contexto(perfil_id, form)
+            contexto = self.contexto(perfil_id, form) 
             if request.session.get("add_contexto") is not None:
                 contexto.update(request.session["add_contexto"])
                 del request.session["add_contexto"]
             return render(request, self.template_name, contexto)
         
-        except Exception as Err:            
-            return render(request, 'error_template.html', {'mensaje': Err})
+        except Exception as Err:  
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje                    
+                    )         
+                )
+            return redirect(reverse('cliente:producto_list'))          
+            
     
     def post(self, request, *args, **kwargs):
         try:
@@ -53,24 +63,25 @@ class PerfileUsuarioView(TemplateView):
                     usuario_id.email = form.cleaned_data['email']
                     usuario_id.save()
                     
-                    request.session["add_contexto"] = {
-                        'toast': {
-                            'titulo': "Editar perfil",
-                            'tipo': "Info",
-                            'mensaje': "Los datos se han guardado correctamente",
-                        }
-                    }
+                    request.session["add_contexto"]=dict(
+                        toast=dict(
+                            titulo='Editar perfil',
+                            tipo='Info',
+                            mensaje="Los datos se han guardado correctamente"                    
+                            )         
+                        )
                     return redirect('cliente:perfil_usuario')
             else:
                 contexto = self.contexto(perfil_id, form)
                 return render(request, self.template_name, contexto)
         
         except Exception as Err:
-            request.session["add_contexto"] = {
-                'toast': {
-                    'titulo': 'Error',
-                    'tipo': 'Error',
-                    'mensaje': str(Err),
-                }
-            }
+            mensaje = Err.args[0]
+            request.session["add_contexto"]=dict(
+                toast=dict(
+                    titulo='Error',
+                    tipo='Error',
+                    mensaje=mensaje                    
+                    )         
+                )
             return redirect(reverse('cliente:perfil_usuario'))

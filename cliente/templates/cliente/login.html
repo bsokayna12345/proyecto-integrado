@@ -28,6 +28,7 @@
                                 </div>
                                 <form action="{% url 'cliente:login' %}" method="POST">
                                      {% csrf_token %} 
+                                     <input type="hidden" name="url_anterior" value="{{url_anterior}}">
                                   <div class="col">
                                     <div class="form-floating">                                    
                                         {{form.email}}                        

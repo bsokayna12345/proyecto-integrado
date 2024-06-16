@@ -8,8 +8,6 @@ from django.contrib.auth.models import User
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
-
-
 from administracion.loginForms import LoginForm
 from main.models import Perfil
 
@@ -41,20 +39,29 @@ class LoginView(TemplateView):
         try:                        
             form = LoginForm(request.POST)  
             if form.is_valid():                               
-                usuario_id = authenticate(username=form.cleaned_data["email"], password=form.cleaned_data["password"])       
+                usuario_id = authenticate(username=form.cleaned_data["email"], password=form.cleaned_data["password"])                       
                 if usuario_id is not None:
-                    # comprobar si el usuario esta bloqueado
-                    perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
-                    if perfil_id.bloqueado:                       
-                        fecha = perfil_id.fecha_bloqueo
-                        if fecha + datetime.timedelta(minutes=1) < timezone.now():
-                            perfil_id.bloqueado = False                                
-                            perfil_id.contador = 0
-                            perfil_id.fecha_bloqueo = None
-                            perfil_id.save()                    
-                            return redirect(('administracion:login'))                             
-                    login(request, usuario_id)
-                    return redirect('administracion:producto_list')                    
+                    if usuario_id.is_superuser:                            
+                        # comprobar si el usuario esta bloqueado
+                        perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
+                        if perfil_id.bloqueado:                       
+                            fecha = perfil_id.fecha_bloqueo
+                            if fecha + datetime.timedelta(minutes=1) < timezone.now():
+                                perfil_id.bloqueado = False                                
+                                perfil_id.contador = 0
+                                perfil_id.fecha_bloqueo = None
+                                perfil_id.save()                    
+                                return redirect(('administracion:login'))                             
+                        login(request, usuario_id)
+                        return redirect('administracion:producto_list')      
+                    request.session["add_contexto"]=dict(
+                    toast=dict(
+                        titulo='Error',
+                        tipo='Error',
+                        mensaje='🚫 ¡Acceso denegado! Parece que no tienes poderes de superusuario. 🦸‍♂️ Solo los administradores pueden entrar aquí. 😅'
+                        )         
+                    )               
+                    return redirect(('administracion:login')) 
                 else:
                     # usuario None
                     usuario_email = form.cleaned_data['email']

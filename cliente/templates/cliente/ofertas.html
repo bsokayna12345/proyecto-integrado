@@ -1,0 +1,158 @@
+{% extends 'cliente/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+  ofertas 
+{% endblock title %}
+
+
+{% block link %}
+<link href="{% static 'main/carousel/carousel.css' %}" rel="stylesheet">
+{% endblock link %}
+
+{% block caroucel %}
+<div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" width="100%" height="50%">
+  <div class="carousel-indicators" width="100%" height="50%">
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>  
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="/media/imagenes_coroucel/caroucel.png" width="100%" height="50%" alt="">     
+    </div>
+    <div class="carousel-item">
+      <img src="/media/imagenes_coroucel/caroucel2.png" width="100%" height="50%" alt=""> 
+    </div>
+    <div class="carousel-item">
+      <img src="/media/imagenes_coroucel/caroucel3.png" width="100%" height="50%" alt=""> 
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+  
+  <!-- Añadimos el formulario de búsqueda -->
+  <div class="carousel-search">
+    <form action="" method="get">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Buscar..." name="q">
+        <button class="btn btn-search" type="submit">
+          <i class="bi bi-search"></i> <!-- Icono de lupa -->
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+.carousel-search {
+  position: absolute;
+  top: 20px; /* Ajusta la posición superior según necesites */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%; /* Ajusta el ancho del buscador */
+  z-index: 10; /* Asegura que esté por encima de las imágenes del carrusel */
+}
+
+.carousel-search .form-control {
+  background-color: rgba(255, 255, 255, 0.5); /* Transparente */
+  border: 1px solid rgba(140, 130, 130, 0.3); /* Borde transparente */
+  color: #4a4747eb; /* Color del texto */
+  padding: 15px;
+  transition: background-color 0.3s, border 0.3s; /* Transición suave */
+}
+
+.carousel-search .form-control::placeholder {
+  color: rgba(92, 88, 88, 0.7); /* Color del placeholder */
+}
+
+.carousel-search .btn-search {
+  background-color: rgba(255, 255, 255, 0.5); /* Transparente */
+  border: 1px solid rgba(140, 130, 130, 0.3); /* Borde transparente */
+  color: #fff; /* Color del texto */
+  transition: background-color 0.3s, border 0.3s; /* Transición suave */
+}
+
+.carousel-search .btn-search:hover {
+  background-color: rgba(251, 198, 134, 0.8); /* Más opaco al pasar el cursor */
+  border: 1px solid rgba(242, 230, 230, 0.5); /* Borde más opaco al pasar el cursor */
+}
+.carousel-search .form-control:hover {
+  background-color: rgb(236, 242, 245); /* Más opaco al pasar el cursor */
+  border: 1px solid rgba(242, 230, 230, 0.5); /* Borde más opaco al pasar el cursor */
+}
+.carousel-search .btn-search i {
+  color: #474040; /* Color del icono */
+}
+</style>
+
+
+{% endblock caroucel %}
+{% block content %}
+<div class="container marketing">
+  <!-- PRODUCTOS -->
+  <div class="container">
+    <div class="row">      
+      {% for producto_id in qsProducto  %}     
+        <div class="col-md-4">
+          <a href="{% url 'cliente:producto_detalle' key=producto_id.id %}" style="text-decoration: none; color: #5a5a5a;">
+          <div class="card mb-4 box-shadow position-relative">
+            {% if producto_id.imagen_p %}
+              <img class="card-img-top" src="{{ producto_id.imagen_p.imagen.url }}" style="height: 200px; width: 90%; display: block;" data-holder-rendered="true">
+            {% else %}
+              <img class="card-img-top" data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail" alt="Thumbnail [100%x225]" style="height: 225px; width: 100%; display: block;" src="data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22380%22%20height%3D%22225%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20380%20225%22%20preserveAspectRatio%3D%22none%22%3E%3Cdefs%3E%3Cstyle%20type%3D%22text%2Fcss%22%3E%23holder_18fbb4f2436%20text%20%7B%20fill%3A%23eceeef%3Bfont-weight%3Abold%3Bfont-family%3AArial%2C%20Helvetica%2C%20Open%20Sans%2C%20sans-serif%2C%20monospace%3Bfont-size%3A19pt%20%7D%20%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%20id%3D%22holder_18fbb4f2436%22%3E%3Crect%20width%3D%22380%22%20height%3D%22225%22%20fill%3D%22%2355595c%22%3E%3C%2Frect%3E%3Cg%3E%3Ctext%20x%3D%22125.9765625%22%20y%3D%22120.9%22%3EThumbnail%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E" data-holder-rendered="true">
+            {% endif %}
+            <!-- Cinta de oferta -->
+            <div class="offer-ribbon">Oferta</div>
+            <div class="card-body" style="height: 150px; width: 100%; display: block;">
+              <p class="card-text">{{producto_id.nombre}}</p>
+              <p class="card-text">{{producto_id.desccripcion}}</p>
+              <div class="d-flex justify-content-between align-items-center">                               
+                <small class="text-muted">{{producto_id.precio}}€</small>
+              </div>
+            </div>
+          </div>
+          </a>
+        </div>            
+      {% endfor %}                   
+    </div>
+  </div>  
+  <!-- /FIN PRODUCTOS-->
+</div>
+
+<style>
+/* Estilo para la cinta de oferta */
+.offer-ribbon {
+  position: absolute;
+  top: 10px;
+  left: -10px;
+  background-color: #ff5733; /* Color llamativo */
+  color: white;
+  padding: 5px 20px;
+  transform: rotate(-45deg);
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 10;
+}
+</style>
+
+{% endblock content %}
+
+
+{% block script %}
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+
+{% endblock script %}
+  
+  
+  
+
+  

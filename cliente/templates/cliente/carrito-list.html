@@ -117,10 +117,19 @@ Carrito
             <h2 class="h6 px-4 py-3 bg-secondary text-center">Subtotal</h2>
             <div class="h3 font-weight-semibold text-center py-3">{{total_carrito}} €</div>
             <hr>         
-                
-            <div id="paypal-button-container">
+            
+            {% if  user.is_authenticated %}
+               <div id="paypal-button-container">
 
-            </div>
+               </div>
+            {% else %}       
+            <div class="d-grid">       
+                <a href="{% url 'cliente:login' %}" class="btn px-4 py-2 btn-warning mt-2 text-center">
+                  Realizar el pago
+                </a>    
+                </div>                    
+            {% endif %}
+                         
             {% comment %} <p id="result-message"></p>          {% endcomment %}
         </div>
     </div>
@@ -210,8 +219,9 @@ Carrito
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": csrftoken
+            "X-CSRFToken": csrftoken,            
           },
+          body: JSON.stringify(data)
         });
 
         const orderData = await response.json();

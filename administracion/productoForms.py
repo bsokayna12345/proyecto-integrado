@@ -28,7 +28,7 @@ class ProductoForm(forms.ModelForm):
         required =False,  
         min_value=0,  
         max_value=100, 
-        widget=forms.NumberInput(attrs={'class': 'form-control', 'title':'Introduce porcentaje ejemplo : 5', "style":"display:none;" })
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'title':'Introduce porcentaje ejemplo : 5', })
     )
     
     """ Model form de Producto"""
@@ -67,7 +67,7 @@ class ImagenForm(forms.ModelForm):
             "imagen_principal",
         ]
         widgets = {
-             'imagen_principal': forms.CheckboxInput(attrs={'class': 'form-check',"style": "margin: 10px;  transform: scale(1.5)", 
+             'imagen_principal': forms.CheckboxInput(attrs={'class': 'form-check',"style": "margin:;  transform:", 
                                                      "data-toggle":"tooltip", "data-placement":"left",
                                                     'title': '!Haz click si Quieres establecer la imagen como una imagen principal.' ,"required":False}),  
             'imagen': forms.ClearableFileInput(attrs={

@@ -11,12 +11,12 @@
 <link href="{% static 'main/carousel/carousel.css' %}" rel="stylesheet">
 {% endblock link %}
 {% block caroucel %}
-<div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-indicators">
+<div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" width="100%" height="50%">
+  <div class="carousel-indicators" width="100%" height="50%">
     <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
     <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
     <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
+  </div>  
   <div class="carousel-inner">
     <div class="carousel-item active">
       <img src="/media/imagenes_coroucel/caroucel.png" width="100%" height="50%" alt="">     
@@ -36,10 +36,67 @@
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
   </button>
+  
+  <!-- Añadimos el formulario de búsqueda -->
+  <div class="carousel-search">
+    <form action="" method="get">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Buscar..." name="q">
+        <button class="btn btn-search" type="submit">
+          <i class="bi bi-search"></i> <!-- Icono de lupa -->
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
-  
+
+<style>
+.carousel-search {
+  position: absolute;
+  top: 20px; /* Ajusta la posición superior según necesites */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%; /* Ajusta el ancho del buscador */
+  z-index: 10; /* Asegura que esté por encima de las imágenes del carrusel */
+}
+
+.carousel-search .form-control {
+  background-color: rgba(255, 255, 255, 0.5); /* Transparente */
+  border: 1px solid rgba(140, 130, 130, 0.3); /* Borde transparente */
+  color: #4a4747eb; /* Color del texto */
+  padding: 15px;
+  transition: background-color 0.3s, border 0.3s; /* Transición suave */
+}
+
+.carousel-search .form-control::placeholder {
+  color: rgba(92, 88, 88, 0.7); /* Color del placeholder */
+}
+
+.carousel-search .btn-search {
+  background-color: rgba(255, 255, 255, 0.5); /* Transparente */
+  border: 1px solid rgba(140, 130, 130, 0.3); /* Borde transparente */
+  color: #fff; /* Color del texto */
+  transition: background-color 0.3s, border 0.3s; /* Transición suave */
+}
+
+.carousel-search .btn-search:hover {
+  background-color: rgba(251, 198, 134, 0.8); /* Más opaco al pasar el cursor */
+  border: 1px solid rgba(242, 230, 230, 0.5); /* Borde más opaco al pasar el cursor */
+}
+.carousel-search .form-control:hover {
+  background-color: rgb(236, 242, 245); /* Más opaco al pasar el cursor */
+  border: 1px solid rgba(242, 230, 230, 0.5); /* Borde más opaco al pasar el cursor */
+}
+.carousel-search .btn-search i {
+  color: #474040; /* Color del icono */
+}
+</style>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
 {% endblock caroucel %}
-  
+
+
 {% block content %}
 <div class="container marketing">
   <!-- PRODUCTOS -->
