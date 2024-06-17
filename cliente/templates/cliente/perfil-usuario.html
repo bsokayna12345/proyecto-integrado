@@ -8,141 +8,6 @@
 
 {% block link %}
   <style>
-        body {
-            background-color: #f9f9fa
-        }
-
-        .padding {
-            padding: 3rem !important
-        }
-
-        .user-card-full {
-            overflow: hidden;
-        }
-
-        .card {
-            border-radius: 5px;
-            -webkit-box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-            box-shadow: 0 1px 20px 0 rgba(69,90,100,0.08);
-            border: none;
-            margin-bottom: 30px;
-        }
-
-        .m-r-0 {
-            margin-right: 0px;
-        }
-
-        .m-l-0 {
-            margin-left: 0px;
-        }
-
-        .user-card-full .user-profile {
-            border-radius: 5px 0 0 5px;
-        }
-
-        .bg-c-lite-green {
-                background: -webkit-gradient(linear, left top, right top, from(#f29263), to(#ee5a6f));
-            background: linear-gradient(to right, #ee5a6f, #f29263);
-        }
-
-        .user-profile {
-            padding: 20px 0;
-        }
-
-        .card-block {
-            padding: 1.25rem;
-        }
-
-        .m-b-25 {
-            margin-bottom: 25px;
-        }
-
-        .img-radius {
-            border-radius: 5px;
-        }
-
-
-        
-        h6 {
-            font-size: 14px;
-        }
-
-        .card .card-block p {
-            line-height: 25px;
-        }
-
-        @media only screen and (min-width: 1400px){
-        p {
-            font-size: 14px;
-        }
-        }
-
-        .card-block {
-            padding: 1.25rem;
-        }
-
-        .b-b-default {
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .m-b-20 {
-            margin-bottom: 20px;
-        }
-
-        .p-b-5 {
-            padding-bottom: 5px !important;
-        }
-
-        .card .card-block p {
-            line-height: 25px;
-        }
-
-        .m-b-10 {
-            margin-bottom: 10px;
-        }
-
-        .text-muted {
-            color: #919aa3 !important;
-        }
-
-        .b-b-default {
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .f-w-600 {
-            font-weight: 600;
-        }
-
-        .m-b-20 {
-            margin-bottom: 20px;
-        }
-
-        .m-t-40 {
-            margin-top: 20px;
-        }
-
-        .p-b-5 {
-            padding-bottom: 5px !important;
-        }
-
-        .m-b-10 {
-            margin-bottom: 10px;
-        }
-
-        .m-t-40 {
-            margin-top: 20px;
-        }
-
-        .user-card-full .social-link li {
-            display: inline-block;
-        }
-
-        .user-card-full .social-link li a {
-            font-size: 20px;
-            margin: 0 10px 0 0;
-            -webkit-transition: all 0.3s ease-in-out;
-            transition: all 0.3s ease-in-out;
-        }
 
 
         body{margin-top:20px;} 
@@ -154,31 +19,28 @@
 
 {% block content %}  
 
-    <div class="card rounded-bottom smooth-shadow-sm">
-        <div class="d-flex align-items-center justify-content-between
-          pt-4 pb-6 px-4">
-          <div class="d-flex align-items-center">
-            <div class="avatar-xxl avatar-indicators avatar-online me-2
-              position-relative d-flex justify-content-end
-              align-items-end mt-n10">
+    <div class="card">
+        <div class="d-flex align-items-center justify-content-start">          
+            <div class="avatar-xxl avatar-indicators avatar-online 
+              position-relative d-flex justify-content-center
+              align-items-end">
               <img src="https://bootdey.com/img/Content/avatar/avatar8.png" class="avatar-xxl
-              rounded-circle border border-2 " alt="Image">
+              rounded-circle border border-2 " alt="Image" width="50%" height="">
             </div>
             <div class="lh-1">
               <h2 class="mb-0">{{perfil_id.user_id.last_name}} {{perfil_id.user_id.first_name}}            
               </h2>
               <p class="mb-0 d-block">{{perfil_id.user_id.email}}</p>
-            </div>
-          </div>          
+            </div>                  
         </div>        
-    <div class="row">
-      <div class="col-sm-3">
+    <div class="row mt-4">
+      <div class="col-sm-1">
         <!-- Contenido de la columna izquierda -->
       </div>
       <div class="col-sm-9">
         <!-- Pestañas -->
         <ul class="nav nav-tabs" id="myTab">
-          <li><a class="nav-link active" href="#home" data-bs-toggle="tab">Inicio</a></li>
+          <li><a class="nav-link active" href="#home" data-bs-toggle="tab">Pedidos</a></li>
           
           <li><a class="nav-link" href="#settings" data-bs-toggle="tab">Editar perfil</a></li>
         </ul>
@@ -186,9 +48,37 @@
         <!-- Contenido de las pestañas -->
         <div class="tab-content">
           <div class="tab-pane active" id="home">
-            <!-- Contenido de la pestaña Home -->
+            <!-- Contenido de la pestaña Home -->                            
+            <table class="table">            
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>usuario</th>
+                        <th>fecha</th>
+                        <th>direccion_entrega_id</th>
+                        <th>order_id</th>               
+                    </tr>
+                </thead>
+                <tbody>
+                <thead>
+                    {% for producto  in qsProducto %}
+                    <tr>
+                      <td>
+                        <a href="{% url 'cliente:detalles_carrito' order_id=producto.id %}">
+                          {{producto.id}}
+                        </a>
+                      </td>
+                      <td>{{producto.usuario_id}}</td>
+                      <td>{{producto.fecha}}</td>
+                      <td>{{producto.direccion_entrega_id}}</td>        
+                      <td>{{producto.order_id}}</td>         
+                     </tr> 
+                    {% endfor %}    
+                </tbody>
+              </table>
           </div>
           <div class="tab-pane" id="messages">
+            
             <!-- Contenido de la pestaña Messages -->
           </div>
           {% if form.errors %}          

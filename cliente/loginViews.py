@@ -53,8 +53,9 @@ class LoginView(TemplateView):
                             perfil_id.bloqueado = False                                
                             perfil_id.contador = 0
                             perfil_id.fecha_bloqueo = None
-                            perfil_id.save()                            
-                            return redirect(('cliente:login'))                                                          
+                            perfil_id.save()     
+                        else:                                                                                                                                     
+                            return redirect(('cliente:login'))
                     login(request, usuario_id)
                     if url_anterior is not None:
                         return redirect(url_anterior) 

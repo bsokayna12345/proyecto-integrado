@@ -5,18 +5,13 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
 from administracion.permisos import class_view_decorator, superuser_required
-from main.funciones import  desencriptar, encriptar
-from django.http import HttpResponseServerError
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-
-from main.models import Pedido_cabecera, Pedido_detalle
+from main.models import Pedido_cabecera
 
 # Create your views here.
 
 @class_view_decorator(superuser_required)
 class PedidoListFilterPageView(TemplateView):
-    """ lista de producto  """
+    """ lista de pedidos  """
     template_name='administracion/pedidos-list.html'
 
     def contexto(self, request, qsProducto:Pedido_cabecera): #form:formulariofilter

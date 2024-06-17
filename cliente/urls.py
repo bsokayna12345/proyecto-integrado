@@ -1,6 +1,6 @@
 
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import  path
 from django.conf import settings
 from django.conf.urls.static import static
 from cliente import views
@@ -32,6 +32,7 @@ urlpatterns = [
     path('producto-ofertas-list', ProductoOfertaListPageView.as_view(), name="oferta_list"),
     path('producto-oferta-list/<int:key_subcategoria>', ProductoOfertaListPageView.as_view(), name="producto_oferta_filter_categoria"),    
     path('producto-buscado-list', ProductoBuscarListPageView.as_view(), name="buscar"),    
-    path('producto_oferta-buscado-list', ProductoOfertaBuscarListPageView.as_view(), name="buscar_oferta"),  
+    path('producto_oferta-buscado-list', ProductoOfertaBuscarListPageView.as_view(), name="buscar_oferta"), 
+  
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

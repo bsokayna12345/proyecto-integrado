@@ -97,7 +97,7 @@
             <div class="pt-2 pt-sm-0 pl-sm-3 mx-auto mx-sm-0 text-center text-sm-left" style="max-width: 10rem">
               <span class="small text-primary "> Precio con iva: </span>
               <div class="h4 font-weight-semibold text-center py-3">
-                  {{item.precio_total_producto_con_iva}}€
+                  {{item.precio_total_producto_con_iva|floatformat:2}}€
               </div>
               <div class="form-group mb-2">
                 <label for="quantity3">Cantidad</label>
@@ -143,7 +143,7 @@
     <div class="col-xl-3 col-md-4 pt-3 pt-md-0">
       <h2 class="h6 px-4 py-3 bg-secondary text-center">Subtotal</h2>
       <div class="h3 font-weight-semibold text-center py-3">
-        {{total_carrito_con_iva}} €
+        {{total_carrito_con_iva|floatformat:2}} €
       </div>
       <hr />
       

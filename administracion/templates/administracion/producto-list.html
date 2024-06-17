@@ -54,8 +54,8 @@
         <td>{{producto.marca_id}}</td>
         <td>{{producto.nombre}}</td>        
         <td>{{producto.precio}}</td>   
-        <td>{{producto.precio_con_iva}}</td>    
-        <td>{{producto.precio_oferta}}</td>  
+        <td>{{producto.precio_con_iva|floatformat:2}}</td>    
+        <td>{{producto.precio_oferta|floatformat:2}}</td>  
        </tr> 
       {% endfor %}              
     </tbody>

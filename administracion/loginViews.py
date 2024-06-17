@@ -50,8 +50,7 @@ class LoginView(TemplateView):
                                 perfil_id.bloqueado = False                                
                                 perfil_id.contador = 0
                                 perfil_id.fecha_bloqueo = None
-                                perfil_id.save()                    
-                                return redirect(('administracion:login'))                             
+                                perfil_id.save()                                                                                
                         login(request, usuario_id)
                         return redirect('administracion:producto_list')      
                     request.session["add_contexto"]=dict(

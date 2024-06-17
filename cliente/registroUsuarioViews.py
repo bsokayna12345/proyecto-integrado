@@ -2,11 +2,11 @@ from django import db
 from django.shortcuts import render , redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
-from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 from administracion.registroUsuarioForms import RegistroForm
-from main.models import Perfil
+from main.models import Direccion, Perfil
 
 
 class RegistroUsuarioView(TemplateView):
@@ -35,7 +35,7 @@ class RegistroUsuarioView(TemplateView):
             form = RegistroForm(request.POST)          
             with db.transaction.atomic():
                 if form.is_valid(): 
-                    usuario_id = get_user_model()(
+                    usuario_id = User(
                         first_name=form.cleaned_data["username"],
                         username=form.cleaned_data["email"],                        
                         last_name=form.cleaned_data["last_name"],                        
@@ -46,8 +46,8 @@ class RegistroUsuarioView(TemplateView):
                     perfil_id = Perfil(
                             user_id = usuario_id                   
                         )                    
-                    perfil_id.save()       
-                    return redirect(reverse('cliente:perfil_usuario'))
+                    perfil_id.save()                       
+                    return redirect(reverse('cliente:login'))
                 else:
                     contexto = self.contexto(request, form=form)
             return render(request, self.template_name, contexto)                          

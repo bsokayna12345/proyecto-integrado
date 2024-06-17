@@ -6,16 +6,18 @@ from django.contrib.auth import get_user_model
 
 from cliente.perfileUsuarioForms import PerfilEditForm, PerfileUsuarioForm
 from administracion.registroUsuarioForms import RegistroForm
-from main.models import Direccion, Perfil
+from main.models import Direccion, Pedido_cabecera, Perfil
 
 class PerfileUsuarioView(TemplateView):
     template_name = "cliente/perfil-usuario.html"
     
-    def contexto(self, perfil_id, form): 
+    def contexto(self,request, perfil_id:Perfil, form:PerfilEditForm): 
         try:
+            qsProducto = Pedido_cabecera.objects.filter(usuario_id=request.user)            
             contexto = {
                 'perfil_id': perfil_id,
                 'form': form,
+                'qsProducto':qsProducto,                
             }
             return contexto
         except Exception as Err:
@@ -38,7 +40,7 @@ class PerfileUsuarioView(TemplateView):
                 'direccion': direccion,
             }
             form = PerfilEditForm(initial=initial_data)
-            contexto = self.contexto(perfil_id, form) 
+            contexto = self.contexto(request=request, perfil_id=perfil_id, form=form) 
             if request.session.get("add_contexto") is not None:
                 contexto.update(request.session["add_contexto"])
                 del request.session["add_contexto"]
@@ -102,3 +104,4 @@ class PerfileUsuarioView(TemplateView):
                     )         
                 )
             return redirect(reverse('cliente:perfil_usuario'))
+
