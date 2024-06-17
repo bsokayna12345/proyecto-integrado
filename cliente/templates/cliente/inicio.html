@@ -10,6 +10,27 @@
 {% block link %}
 <link href="{% static 'main/carousel/carousel.css' %}" rel="stylesheet">
 {% endblock link %}
+
+{% block categoria %}
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown"
+    aria-expanded="false">Categorías</a>
+  <ul class="dropdown-menu" aria-labelledby="dropdown07">
+    {% for categoria in categorias %}
+    <li class="dropdown-submenu">
+      <a class="dropdown-item dropdown-toggle" href="#">{{ categoria.nombre }}</a>
+      <ul class="dropdown-menu">
+        {% for subcategoria in categoria.get_Categoria_SubCategoria.all %}
+          <li><a class="dropdown-item" href="{% url 'cliente:producto_filter_subcategoria' key_subcategoria=subcategoria.id %}">{{ subcategoria.nombre }}</a></li>
+        {% endfor %}
+      </ul>
+    </li>
+  {% endfor %}
+  </ul>
+</li>
+  
+{% endblock categoria %}
+  
 {% block caroucel %}
 <div id="myCarousel" class="carousel carousel-dark slide" data-bs-ride="carousel" width="100%" height="50%">
   <div class="carousel-indicators" width="100%" height="50%">
@@ -39,9 +60,9 @@
   
   <!-- Añadimos el formulario de búsqueda -->
   <div class="carousel-search">
-    <form action="" method="get">
+    <form action="{% url 'cliente:buscar' %}" method="get">
       <div class="input-group">
-        <input type="text" class="form-control" placeholder="Buscar..." name="q">
+        <input type="text" class="form-control" name="buscar" placeholder="Buscar..." name="q">
         <button class="btn btn-search" type="submit">
           <i class="bi bi-search"></i> <!-- Icono de lupa -->
         </button>
@@ -92,6 +113,36 @@
 }
 </style>
 
+
+<style>
+  .dropdown-submenu {
+    position: relative;
+  }
+
+  .dropdown-submenu .dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -1px;
+    margin-left: 0; /* Adjust this value as needed to position the submenu properly */
+  }
+
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-item.dropdown-toggle:after {
+    content: '\f0da'; /* FontAwesome arrow icon */
+    float: right;
+    border: none;
+    font-family: 'Font Awesome 5 Free'; /* Adjust if you are using a different version */
+    font-weight: 900; /* Necessary for FontAwesome */
+  }
+
+  .dropdown-submenu:hover > .dropdown-menu {
+    display: block;
+  }
+</style>
+
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
 {% endblock caroucel %}
@@ -131,7 +182,21 @@
 {% endblock content %}
 
 {% block script %}
-
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var dropdowns = document.querySelectorAll('.dropdown-submenu > a');
+    dropdowns.forEach(function(dropdown) {
+      dropdown.addEventListener('click', function(event) {
+        var submenu = dropdown.nextElementSibling;
+        if (submenu) {
+          event.preventDefault();
+          event.stopPropagation();
+          submenu.classList.toggle('show');
+        }
+      });
+    });
+  });
+</script>
 {% endblock script %}
   
   

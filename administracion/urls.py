@@ -5,6 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from administracion.filtrosView import filtro_subcategoria_categoria
 from administracion.loginViews import LoginView, logout_view
+from administracion.pedidoViews import PedidoListFilterPageView
 from administracion.usuariosView import UsuariosListFilterPageView
 from cliente.perfilUsuarioViews import PerfileUsuarioView
 from administracion.productoViews import EliminarImagen, ProductoAddPageView, ProductoEditPageView, ProductoListFilterPageView, SubirImagen
@@ -25,6 +26,6 @@ urlpatterns = [
     path('usuarios-list',UsuariosListFilterPageView.as_view(), name='usuarios_list' ),
     path('login',LoginView.as_view(), name='login'),    
     path('logout',logout_view, name='logout'),
-      
+    path('pedido-list', PedidoListFilterPageView.as_view(), name='pedido_list'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

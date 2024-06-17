@@ -4,6 +4,7 @@ from django import db
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic.base import TemplateView
+from administracion.permisos import class_view_decorator, superuser_required
 from main.funciones import  desencriptar, encriptar
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
@@ -12,8 +13,8 @@ from main.models import Categoria, ImagenProducto, Producto, SubCategoria
 from administracion.productoForms import ImagenForm, ProductoForm
 
 # Create your views here.
-from django.shortcuts import render
-@method_decorator(login_required(login_url='administracion:login'), name='dispatch')  
+
+@class_view_decorator(superuser_required)
 class ProductoListFilterPageView(TemplateView):
     """ lista de producto  """
     template_name='administracion/producto-list.html'
@@ -49,7 +50,7 @@ class ProductoListFilterPageView(TemplateView):
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
-@method_decorator(login_required(login_url='administracion:login'), name='dispatch')    
+@class_view_decorator(superuser_required)  
 class ProductoAddPageView(TemplateView):
     """  añadir producto """
     template_name ="administracion/producto-add.html"    
@@ -114,7 +115,7 @@ class ProductoAddPageView(TemplateView):
                 )
             return redirect(reverse('administracion:producto_list')) 
 
-@method_decorator(login_required(login_url='administracion:login'), name='dispatch')    
+@class_view_decorator(superuser_required)  
 class ProductoEditPageView(TemplateView):
     """ editar o añadir producto """
     template_name ="administracion/producto-edit.html"
@@ -257,7 +258,7 @@ class SubirImagen(TemplateView):
                 )
             return redirect(reverse('administracion:producto_list')) 
         
-
+@class_view_decorator(superuser_required)
 class EliminarImagen(TemplateView):
     """ Eliminar Imagen"""
     def post(self, request, *args, **kwargs):

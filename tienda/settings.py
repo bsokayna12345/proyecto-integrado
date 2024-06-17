@@ -51,10 +51,17 @@ INSTALLED_APPS = [
     'rest_framework',
     # "corsheaders",
     'fontawesomefree',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'main',
     'administracion',
     'cliente',
 ]
+
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -80,8 +87,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'cliente.contexto_categorias.categorias_disponibles',
-                # 'cliente.contexto_carrito.carrito_unidades',
+               
             ],
         },
     },
@@ -172,14 +178,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'smtp.example.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'sokayna@gamil.com'
-EMAIL_HOST_PASSWORD = 'sokayna@gamil.com'
-DEFAULT_FROM_EMAIL = 'sokayna@gamil.com'
-# Emails
-if DEBUG:
-    EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-    EMAIL_FILE_PATH= os.path.join(BASE_DIR, 'sent_email')
-else:
-    pass
+EMAIL_HOST_USER = 'sokayna@2gmail.com'
+EMAIL_HOST_PASSWORD = 'Sokayna12.'
+EMAIL_USE_LOCALTIME = True
 
-SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
+# Emails
+# if DEBUG:
+#     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+#     EMAIL_FILE_PATH= os.path.join(BASE_DIR, 'sent_email')
+# else:
+#     pass
+
+# SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'

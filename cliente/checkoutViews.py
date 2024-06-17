@@ -1,5 +1,6 @@
 from decimal import Decimal
 import json
+from django.conf import settings
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView
@@ -9,13 +10,10 @@ from django import db
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 # Create your views here.f
 from cliente.funciones import generateAccessToken, create_order, capture_order
 from main.models import Pedido_cabecera, Pedido_detalle, Producto
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import permission_classes
+from django.core.mail import send_mail
 
 
 
@@ -104,6 +102,15 @@ class CapturarOdernPaypal(APIView):
                             mensaje="El pago si ha realizado correctamente"
                             )         
                         )
+                        # usuario_email = 'irmatica871@gmail.com'
+                        # asunto = 'Gracias por tu compra'
+                        # mensaje = 'Tu compra ha sido realizada con éxito. ¡Gracias por comprar con nosotros!'
+                        # remitente = settings.EMAIL_HOST_USER
+                        # destinatario = [usuario_email]
+
+                        # # Enviar el correo electrónico
+                        # send_mail(asunto, mensaje, remitente, destinatario)
+
 
                     return Response({
                         'status': 'COMPLETED',

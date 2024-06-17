@@ -49,6 +49,8 @@
       width: 100%;
       height: px; /* Ajusta esta altura según sea necesario */
     }
+
+
   </style>
   <!-- Custom styles for this template -->
   <link href="{% static '/main/carousel/carousel.css' %}" rel="stylesheet">
@@ -71,15 +73,12 @@
             <li class="nav-item">
               <a class="nav-link " href="{% url 'cliente:oferta_list' %}" tabindex="-1" aria-disabled="true">Oferatas</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="dropdown07" data-bs-toggle="dropdown"
-                aria-expanded="false">Categorías</a>
-              <ul class="dropdown-menu" aria-labelledby="dropdown07">
-                {% for categoria in categorias %}                
-                <li><a class="dropdown-item" href="{% url 'cliente:producto_filter_categoria' key_categoria=categoria.id%}">{{ categoria.nombre }}</a></li>
-                {% endfor %}
-              </ul>
-            </li>
+              
+              {% block categoria %}
+                
+              {% endblock categoria %}
+                
+            
           </ul>                   
         <div>        
           <a class="nav-link  text-light" href="{% url 'cliente:mostrar_carrito' %}" tabindex="-1" aria-disabled="true"><i class="bi bi-cart-plus" style="color: #F4D03F;font-size: 30px; margin-right: 5px;"></i>
@@ -131,6 +130,7 @@
   {% endblock script %}
 
   {% include 'main/toast-alert.html' %}
+  
 </body>
 
 </html>

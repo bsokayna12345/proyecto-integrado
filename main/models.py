@@ -132,7 +132,7 @@ class Pedido_cabecera(models.Model):
         verbose_name_plural = "Pedidos_cebeceras"
 
     def __str__(self):
-        return str(' usuario id : '+self.usuario_id + ', metodo de pago id : '+ self.metodo_pago_id + ', item: '+ self.item)
+        return str(self.usuario_id)
 
 
 class Pedido_detalle(models.Model):
@@ -146,8 +146,6 @@ class Pedido_detalle(models.Model):
     producto_id =  models.ForeignKey(to=Producto, on_delete=models.RESTRICT, related_name='get_productos_pedidos')
     pedido_cabecera_id = models.ForeignKey(Pedido_cabecera, on_delete=models.CASCADE, related_name='detalles')
        
-    
-    
     class Meta:
         db_table = 'pedido_detalle'
         verbose_name = "Pedido"
@@ -155,4 +153,19 @@ class Pedido_detalle(models.Model):
         ordering = ['-nombre']
     
     def __str__(self):        
-        return f"{self.producto_id}-{self.nombre}"
+        return str(self.nombre)
+    
+class Comentario(models.Model):
+    id = models.AutoField(db_column='id', primary_key=True)
+    producto_id =  models.ForeignKey(to=Producto, on_delete=models.RESTRICT, related_name='get_Comentario_Producto')
+    usuario_id = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.RESTRICT, related_name="get_Comentario_User")   
+    contenido = models.CharField(max_length=200)    
+    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name=_("Fecha de creación"))
+
+    def __str__(self):
+        return f'Comentario de {self.usuario_id} en {self.producto_id}'
+
+    class Meta:
+        db_table = "comentario"
+        verbose_name = "Comentario"
+        verbose_name_plural = "Comentarios"
