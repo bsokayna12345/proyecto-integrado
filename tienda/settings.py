@@ -189,4 +189,4 @@ EMAIL_USE_LOCALTIME = True
 # else:
 #     pass
 
-# SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
+SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'

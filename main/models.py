@@ -132,7 +132,7 @@ class Pedido_cabecera(models.Model):
         verbose_name_plural = "Pedidos_cebeceras"
 
     def __str__(self):
-        return str(self.usuario_id)
+        return str(self.usuario_id) + '_' + str(self.id)
 
 
 class Pedido_detalle(models.Model):
@@ -153,7 +153,7 @@ class Pedido_detalle(models.Model):
         ordering = ['-nombre']
     
     def __str__(self):        
-        return str(self.nombre)
+        return str(self.nombre) + '_' + str(self.pedido_cabecera_id.id)
     
 class Comentario(models.Model):
     id = models.AutoField(db_column='id', primary_key=True)

@@ -1,0 +1,59 @@
+{% extends 'cliente/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}
+Detalles Compra
+{% endblock title %}
+
+
+{% block link %}
+   
+{% endblock link %}
+
+
+{% block caroucel %}
+  
+{% endblock caroucel %}
+  
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Detalles de la Compra</h1>
+    
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Detalles del Pedido</h5>
+            <p class="card-text"><strong>ID del Pedido:</strong> {{ pedido_cabecera.id }}</p>
+            <p class="card-text"><strong>ID PayPal:</strong> {{ pedido_cabecera.order_id }}</p>
+            <!-- Añade más detalles del pedido aquí según sea necesario -->
+        </div>
+    </div>
+    
+    <h2 class="mb-3">Productos Comprados</h2>
+    <div class="list-group mb-4">
+        {% for detalle in qsPedido_detalle %}
+        <div class="list-group-item">
+            <h5 class="mb-1">{{ detalle.nombre }}</h5>
+            <p class="mb-1">Cantidad: {{ detalle.unidades }}</p>
+            <p class="mb-1">Precio Unitario: <strong>€{{ detalle.precio }}</strong></p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Puedes añadir más secciones como detalles de envío, información del cliente, etc. -->
+    
+    <div class="text-center">
+        <a href="/" class="btn btn-primary">Volver a la página principal</a>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
+  
+  
+  
+
+  

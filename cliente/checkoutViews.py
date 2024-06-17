@@ -1,7 +1,7 @@
 from decimal import Decimal
 import json
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView
 from django.views import View
@@ -102,7 +102,7 @@ class CapturarOdernPaypal(APIView):
                             mensaje="El pago si ha realizado correctamente"
                             )         
                         )
-                        # usuario_email = 'irmatica871@gmail.com'
+                        # usuario_email = 'irmatica871.'
                         # asunto = 'Gracias por tu compra'
                         # mensaje = 'Tu compra ha sido realizada con éxito. ¡Gracias por comprar con nosotros!'
                         # remitente = settings.EMAIL_HOST_USER
@@ -112,13 +112,45 @@ class CapturarOdernPaypal(APIView):
                         # send_mail(asunto, mensaje, remitente, destinatario)
 
 
+                    # return Response({
+                    #     'status': 'COMPLETED',
+                    #     'redirect_url': reverse('cliente:detalles_carrito'),
+                    #     'id_pedido_cabecera': pedido_cabecera.id,
+                        
+                    # }, status=status.HTTP_200_OK)
                     return Response({
-                        'status': 'COMPLETED',
-                        'redirect_url': reverse('cliente:mostrar_carrito'),
-                        'id_pedido_cabecera':pedido_cabecera.id,
+                        'status': 'COMPLETED',                        
+                        'id_pedido_cabecera': pedido_cabecera.id,
                     }, status=status.HTTP_200_OK)
             else:
                 return Response({'error': 'El pago no se completó correctamente'}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as error:
             print(error)
             return Response({'error': 'Ocurrió un error al procesar el pago'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class DetallesCompra(TemplateView):
+    template_name = "cliente/detalles_compra.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Obtener el ID del pedido de los parámetros de la URL
+        pedido_id = self.kwargs.get('order_id')
+        
+        # Obtener la cabecera del pedido desde la base de datos
+        pedido_cabecera = get_object_or_404(Pedido_cabecera, id=pedido_id)
+        
+        # Obtener los detalles del pedido utilizando el related_name 'detalles'
+        qsPedido_detalle = pedido_cabecera.detalles.all()
+        
+        # Pasar la cabecera y los detalles del pedido al contexto de la plantilla
+        context = dict(
+            pedido_cabecera=pedido_cabecera,
+            qsPedido_detalle=qsPedido_detalle,
+        )
+      
+        
+        return context
+
+        

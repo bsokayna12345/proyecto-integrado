@@ -63,8 +63,10 @@ class ProductoDetalle(TemplateView):
     def contexto(self, request, producto_id:Producto): #form:formulariofilter
         try:            
 
-            pedido_detalle = Pedido_detalle.objects.filter(producto_id=producto_id, pedido_cabecera_id__usuario_id=request.user)  
-            producto_id.imagen_p =  producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()
+            pedido_detalle = None
+            if request.user.is_authenticated:
+                pedido_detalle = Pedido_detalle.objects.filter(producto_id=producto_id, pedido_cabecera_id__usuario_id=request.user)  
+            producto_id.imagen_p =  producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first()            
             producto_id.imagenes =  producto_id.get_Producto_ImagenProducto.all()
             contexto = dict(
                 producto_id=producto_id,     
@@ -113,6 +115,7 @@ class ProductoDetalle(TemplateView):
                         return redirect(reverse('cliente:producto_detalle', kwargs=dict(key=key_producto)))                        
         except Exception as Err:
             #request.session["add_contexto"]["toast"]["mensaje"].args
+            print(Err)
             mensaje = Err.args[0]
             request.session["add_contexto"]=dict(
                 toast=dict(

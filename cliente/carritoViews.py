@@ -10,12 +10,12 @@ from main.funciones import  desencriptar, encriptar
 from django.http import HttpResponseServerError
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from main.models import  Producto, SubCategoria
+from main.models import  Direccion, Producto, SubCategoria
 from django.shortcuts import render
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
-
+from django.contrib.auth.models import User
     
 
 class addirAlcarrito(TemplateView):
@@ -148,13 +148,13 @@ class MostrarCarrito(TemplateView):
         # Preparar los ítems del carrito para PayPal
         cart_items = []
         subtotal = 0
-
+        contador_productos = 0
         for item_id, item in carrito.items():
             producto = Producto.objects.get(id=item_id)
             precio = producto.precio  # Precio del producto
             iva = producto.iva                       
             precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))   
-            
+            contador_productos += 1
             if producto.en_oferta:
                 porcentaje = producto.porcentaje
                 porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
@@ -170,6 +170,11 @@ class MostrarCarrito(TemplateView):
                 'quantity': item['unidades'],
                 'price': float(precio_con_iva),
             })
+        #comprovar si el usuario tiene direccion 
+        direccion = None
+        if request.user.is_authenticated:
+            usuario_id =request.user
+            direccion = Direccion.objects.filter(user_id=usuario_id).first()
 
         contexto = {
             'carrito': carrito,
@@ -177,7 +182,9 @@ class MostrarCarrito(TemplateView):
             'total_carrito': total_carrito_sin_iva,
             'total_carrito_sin_iva': total_carrito_sin_iva,
             'cart_items': json.dumps(cart_items),
-            'subtotal': subtotal
+            'subtotal': subtotal,
+            'direccion': direccion,
+            'contador_productos':contador_productos
         }
         if request.session.get("add_contexto", None) is not None:
                 contexto.update(request.session["add_contexto"])

@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 
 from cliente.perfileUsuarioForms import PerfilEditForm, PerfileUsuarioForm
 from administracion.registroUsuarioForms import RegistroForm
-from main.models import Perfil
+from main.models import Direccion, Perfil
 
 class PerfileUsuarioView(TemplateView):
     template_name = "cliente/perfil-usuario.html"
@@ -24,13 +24,18 @@ class PerfileUsuarioView(TemplateView):
      
     def get(self, request, *args, **kwargs):
         try:
-            #TODO hay que controlar si el usuario es no o el usuario no tiene perfil por ejemplo en el caso de que sea sea el usuario admin
+            #TODO hay que controlar si el usuario es no o el usuario no tiene perfil por ejemplo en el caso de que sea sea el usuario admin            
             perfil_id = Perfil.objects.filter(user_id=request.user).first()
+            direccion = None
+            direccion_id = Direccion.objects.filter(user_id=request.user).first()
+            if direccion_id is not None:
+                direccion = direccion_id.direccion
             initial_data = {
                 'nombre': perfil_id.user_id.first_name,
                 'apellido': perfil_id.user_id.last_name,
                 'movil': perfil_id.tel,
                 'email': perfil_id.user_id.email,
+                'direccion': direccion,
             }
             form = PerfilEditForm(initial=initial_data)
             contexto = self.contexto(perfil_id, form) 
@@ -62,7 +67,19 @@ class PerfileUsuarioView(TemplateView):
                     usuario_id.last_name = form.cleaned_data['apellido']
                     usuario_id.email = form.cleaned_data['email']
                     usuario_id.save()
-                    
+                    direccion = request.POST.get('direccion', None)
+                    direccion_id = Direccion.objects.filter(user_id=usuario_id).first()
+                    #modificar direccion
+                    if direccion is not None and direccion_id is not None:
+                        direccion_id.user_id = usuario_id
+                        direccion_id.direccion = direccion     
+                        direccion_id.save()                  
+                    else:
+                        Direccion(
+                            user_id=usuario_id,
+                            direccion=direccion,
+                        ).save()               
+                         
                     request.session["add_contexto"]=dict(
                         toast=dict(
                             titulo='Editar perfil',
