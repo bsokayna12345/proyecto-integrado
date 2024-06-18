@@ -1,21 +1,22 @@
-# Usa una imagen base oficial de Python
-FROM python:3.11.9
 
-# Establece el directorio de trabajo en el contenedor
+#Instalar dependencias y configurar el entorno
+FROM python:3.11-slim-buster
+
 WORKDIR /app
 
-# Copia el archivo de requerimientos y luego instala las dependencias
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r requirements.txt
+#Instalar dependencias de Python
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
 
-# Instala Gunicorn
-RUN pip install gunicorn
+#Copiar el código del proyecto
+COPY . .
 
-# Copia el contenido del proyecto al directorio de trabajo en el contenedor
-COPY . /app/
+#Recoger archivos estáticos
+RUN python manage.py collectstatic --noinput
 
-# Expone el puerto en el que correrá la aplicación
+#Exponer el puerto
 EXPOSE 8000
 
-# Define el comando por defecto para correr la aplicación
+#Comando para correr la aplicación
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "tienda.wsgi:application"]
+

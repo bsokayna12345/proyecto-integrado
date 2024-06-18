@@ -17,6 +17,8 @@ services:
     command: gunicorn --bind 0.0.0.0:8000 tienda.wsgi:application
     volumes:
       - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     depends_on:
       - db
     networks:
@@ -25,8 +27,8 @@ services:
       - POSTGRES_DB=tienda
       - POSTGRES_USER=developer
       - POSTGRES_PASSWORD=developer
-      - DATABASE_HOST=db  # Añadir esto
-      - DATABASE_PORT=5432  # Añadir esto
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
       - DEBUG=True
 
   nginx:
@@ -35,6 +37,8 @@ services:
       - "80:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     depends_on:
       - web
     networks:
@@ -42,6 +46,8 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:
 
 networks:
   mynetwork:

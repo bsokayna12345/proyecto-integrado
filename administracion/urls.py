@@ -27,5 +27,8 @@ urlpatterns = [
     path('login',LoginView.as_view(), name='login'),    
     path('logout',logout_view, name='logout'),
     path('pedido-list', PedidoListFilterPageView.as_view(), name='pedido_list'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
