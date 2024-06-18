@@ -46,17 +46,17 @@ class addirAlcarrito(TemplateView):
                 mensaje = "¡No hay suficientes unidades!"
             else:
                 # Calcular el precio con IVA
-                precio = Decimal(str(producto.precio))
-                iva = Decimal(str(producto.iva))
+                precio = Decimal(str(producto.precio)) if producto.precio else Decimal('0.0')
+                iva = Decimal(str(producto.iva)) if producto.iva else Decimal('0.0')
                 precio_con_iva = precio * (Decimal('1') + iva)
                 
                 # Calcular el precio de oferta (si aplica)
-                if producto.en_oferta == True:
-                    porcentaje = producto.porcentaje
-                    porcentaje_oferta = Decimal(str(porcentaje)) / 100
+                if producto.en_oferta:
+                    porcentaje = Decimal(str(producto.porcentaje)) if producto.porcentaje else Decimal('0.0')
+                    porcentaje_oferta = porcentaje / Decimal('100.0')
                     precio_oferta = precio_con_iva * (Decimal('1') - porcentaje_oferta)
                 else:
-                    precio_oferta = None
+                    precio_oferta = Decimal('0.0')
                 
                 # Verificar si el producto ya está en el carrito
                 if str(key) in carrito:
@@ -96,100 +96,123 @@ class addirAlcarrito(TemplateView):
                 )         
             )
             return redirect('cliente:producto_list')
-        
-
-class MostrarCarrito(TemplateView):    
+    
+class MostrarCarrito(TemplateView):
     """Ver el carrito"""
     template_name = 'cliente/carrito-list.html'
 
     def get(self, request, *args, **kwargs):
-        carrito = request.session.get('carrito', {})
-        
-        # Si el carrito está guardado como una cadena JSON, lo deserializamos
-        if isinstance(carrito, str):          
-            carrito = json.loads(carrito)
-        
-        total_carrito_sin_iva = 0  # Inicializa el subtotal del carrito
-        total_carrito_con_iva = 0
-        items_a_remover = []  # Lista de items a remover si no existen
-
-        # Calcular el precio total por producto y el subtotal del carrito
-        for item_id, item in list(carrito.items()):  # Convertimos a lista para modificar el diccionario mientras iteramos
-            try:
-                producto = Producto.objects.get(id=item_id)
-                precio = producto.precio  # Precio del producto
-                iva = producto.iva                       
-                precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))                                                                                                           
-                # Comprobar si el producto es de oferta                 
-                if producto.en_oferta:
-                    porcentaje = producto.porcentaje
-                    porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
-                    precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta) 
-                    item['precio_total_producto_con_iva'] = float(precio_oferta) * item['unidades']
-                else:
-                    item['precio_total_producto_sin_iva'] = float(precio) * item['unidades']
-                    item['precio_total_producto_con_iva'] = float(precio_con_iva) * item['unidades']
-                
-                item['id']=producto.id
-                total_carrito_sin_iva += item.get('precio_total_producto_sin_iva', 0)
-                total_carrito_con_iva += item.get('precio_total_producto_con_iva', 0)
-            except Producto.DoesNotExist:                
-                items_a_remover.append(item_id)
-        
-        # Remover productos no existentes del carrito
-        for item_id in items_a_remover:
-            del carrito[item_id]
-        
-        # Actualizar la sesión si hubo cambios
-        if items_a_remover:
-            request.session['carrito'] = json.dumps(carrito)
-
-        # Preparar los ítems del carrito para PayPal
-        cart_items = []
-        subtotal = 0
-        contador_productos = 0
-        for item_id, item in carrito.items():
-            producto = Producto.objects.get(id=item_id)
-            precio = producto.precio  # Precio del producto
-            iva = producto.iva                       
-            precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))   
-            contador_productos += 1
-            if producto.en_oferta:
-                porcentaje = producto.porcentaje
-                porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
-                precio_oferta = precio_con_iva * (Decimal('1') - porcentaje_oferta)               
-                precio_total = float(precio_oferta) * item['unidades']
-            else:
-                precio_total = float(precio_con_iva) * item['unidades']
+        try:
+            carrito = request.session.get('carrito', {})
             
-            subtotal += precio_total            
-            cart_items.append({
-                'id': producto.id,
-                'name': producto.nombre,
-                'quantity': item['unidades'],
-                'price': float(precio_con_iva),
-            })
-        #comprovar si el usuario tiene direccion 
-        direccion = None
-        if request.user.is_authenticated:
-            usuario_id =request.user
-            direccion = Direccion.objects.filter(user_id=usuario_id).first()
+            # Si el carrito está guardado como una cadena JSON, lo deserializamos
+            if isinstance(carrito, str):          
+                carrito = json.loads(carrito)
+            
+            total_carrito_sin_iva = 0  # Inicializa el subtotal del carrito
+            total_carrito_con_iva = 0
+            items_a_remover = []  # Lista de items a remover si no existen
 
-        contexto = {
-            'carrito': carrito,
-            'total_carrito_con_iva': total_carrito_con_iva,
-            'total_carrito': total_carrito_sin_iva,
-            'total_carrito_sin_iva': total_carrito_sin_iva,
-            'cart_items': json.dumps(cart_items),
-            'subtotal': subtotal,
-            'direccion': direccion,
-            'contador_productos':contador_productos
-        }
-        if request.session.get("add_contexto", None) is not None:
+            # Calcular el precio total por producto y el subtotal del carrito
+            for item_id, item in list(carrito.items()):  # Convertimos a lista para modificar el diccionario mientras iteramos
+                try:
+                    producto = Producto.objects.get(id=item_id)
+                    precio = producto.precio  # Precio del producto
+                    iva = producto.iva                       
+                    precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))                                                                                                           
+                    # Comprobar si el producto es de oferta                 
+                    if producto.en_oferta:
+                        porcentaje = producto.porcentaje
+                        if porcentaje is not None:
+                            porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                            precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta) 
+                            item['precio_total_producto_con_iva'] = float(precio_oferta) * item['unidades']
+                        else:
+                            item['precio_total_producto_con_iva'] = float(precio_con_iva) * item['unidades']
+                    else:
+                        item['precio_total_producto_sin_iva'] = float(precio) * item['unidades']
+                        item['precio_total_producto_con_iva'] = float(precio_con_iva) * item['unidades']
+                    
+                    item['id'] = producto.id
+                    total_carrito_sin_iva += item.get('precio_total_producto_sin_iva', 0)
+                    total_carrito_con_iva += item.get('precio_total_producto_con_iva', 0)
+                except Producto.DoesNotExist:                
+                    items_a_remover.append(item_id)
+            
+            # Remover productos no existentes del carrito
+            for item_id in items_a_remover:
+                del carrito[item_id]
+            
+            # Actualizar la sesión si hubo cambios
+            if items_a_remover:
+                request.session['carrito'] = json.dumps(carrito)
+
+            # Preparar los ítems del carrito para PayPal
+            cart_items = []
+            subtotal = 0
+            contador_productos = 0
+            for item_id, item in carrito.items():
+                try:
+                    producto = Producto.objects.get(id=item_id)
+                    precio = producto.precio  # Precio del producto
+                    iva = producto.iva                       
+                    precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva))) 
+                    item['marca'] = producto.marca_id.nombre
+                    item['categoria'] = producto.subcategoria_id.categoria_id.nombre  
+                    contador_productos += 1
+                    if producto.en_oferta:
+                        porcentaje = producto.porcentaje
+                        if porcentaje is not None:
+                            porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                            precio_oferta = precio_con_iva * (Decimal('1') - porcentaje_oferta)               
+                            precio_total = float(precio_oferta) * item['unidades']
+                        else:
+                            precio_total = float(precio_con_iva) * item['unidades']
+                    else:
+                        precio_total = float(precio_con_iva) * item['unidades']
+                    
+                    subtotal += precio_total            
+                    cart_items.append({
+                        'id': producto.id,
+                        'name': producto.nombre,
+                        'quantity': item['unidades'],
+                        'price': float(precio_con_iva),
+                    })
+                except Producto.DoesNotExist:
+                    continue
+            
+            # Comprobar si el usuario tiene dirección
+            direccion = None
+            if request.user.is_authenticated:
+                usuario_id = request.user
+                direccion = Direccion.objects.filter(user_id=usuario_id).first()
+
+            contexto = {
+                'carrito': carrito,
+                'total_carrito_con_iva': total_carrito_con_iva,
+                'total_carrito': total_carrito_sin_iva,
+                'total_carrito_sin_iva': total_carrito_sin_iva,
+                'cart_items': json.dumps(cart_items),
+                'subtotal': subtotal,
+                'direccion': direccion,
+                'contador_productos': contador_productos
+            }
+            
+            if request.session.get("add_contexto", None) is not None:
                 contexto.update(request.session["add_contexto"])
                 del request.session["add_contexto"]
 
-        return render(request, self.template_name, contexto)
+            return render(request, self.template_name, contexto)
+        except Exception as e:
+            mensaje = str(e)
+            request.session["add_contexto"] = {
+                'toast': {
+                    'titulo': 'Error',
+                    'tipo': 'Error',
+                    'mensaje': mensaje
+                }
+            }
+            return render(request, self.template_name, {'error': mensaje})
 
 class ModificarCarrito(TemplateView):
     """ añadir producto a la cesta """

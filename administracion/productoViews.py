@@ -16,39 +16,40 @@ from administracion.productoForms import ImagenForm, ProductoForm
 
 @class_view_decorator(superuser_required)
 class ProductoListFilterPageView(TemplateView):
-    """ lista de producto  """
-    template_name='administracion/producto-list.html'
+    template_name = 'administracion/producto-list.html'
 
-    def contexto(self, request, qsProducto:Producto): #form:formulariofilter
+    def get_context_data(self, **kwargs):
+        contexto = super().get_context_data(**kwargs)
+        
         try:
-            for producto_id in qsProducto:                                                   
-                # calcular al precio con iva 
-                precio = producto_id.precio  # Precio del producto
-                iva = producto_id.iva                       
-                precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
-                producto_id.precio_con_iva = precio_con_iva                 
-                # si tengo producto de oferta  
-                if producto_id.en_oferta == True:                                            
-                    porcentaje = producto_id.porcentaje
+            # Obtener los productos de alguna forma (filtrados, todos, etc.)
+            qsProducto = Producto.objects.all()  # Aquí puedes aplicar cualquier filtro que necesites
+            
+            # Calcular los precios con IVA y otras operaciones si es necesario
+            for producto in qsProducto:
+                precio = producto.precio
+                iva = producto.iva
+                precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))
+                producto.precio_con_iva = precio_con_iva
+                
+                if producto.en_oferta:
+                    porcentaje = producto.porcentaje
                     porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
-                    precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta)                                          
-                    producto_id.precio_oferta = precio_oferta                                      
-            contexto = dict(
-                qsProducto=qsProducto,
-            )
-            return contexto
-        except Exception as Err:
-            return Err
-     
-    def get(self, request, *args, **kwargs):        
-        qsProducto = Producto.objects.all()
-        contexto = self.contexto(request, qsProducto)
-        if request.session.get("add_contexto", None) is not None:
-            contexto.update(request.session["add_contexto"])
-            del request.session["add_contexto"]
-        return render(request, self.template_name, contexto)
-    def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+                    precio_oferta = precio_con_iva * (Decimal('1') - porcentaje_oferta)
+                    producto.precio_oferta = precio_oferta
+            
+            # Agregar qsProducto al contexto
+            contexto['qsProducto'] = qsProducto
+            
+        except Exception as err:
+            contexto['error_message'] = str(err)
+        
+        # Agregar cualquier otro dato de contexto que necesites
+        if self.request.session.get("add_contexto"):
+            contexto.update(self.request.session["add_contexto"])
+            del self.request.session["add_contexto"]
+        
+        return contexto
 
 @class_view_decorator(superuser_required)  
 class ProductoAddPageView(TemplateView):
