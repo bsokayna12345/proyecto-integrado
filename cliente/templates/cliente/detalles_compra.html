@@ -32,13 +32,27 @@ Detalles Compra
     
     <h2 class="mb-3">Productos Comprados</h2>
     <div class="list-group mb-4">
+        <div class="list-group-item d-flex">
+            <p class="col-md-1"><strong>Imagen</strong></p>
+            <p class="col-md-2"><strong>Nombre</strong></p>
+            <p class="col-md-2"><strong>Cantidad</strong></p>
+            <p class="col-md-2"><strong>Precio Unitario</strong></p>
+            <p class="col-md-2"><strong>Precio iva</strong></p>
+            <p class="col-md-2"><strong>Precio oferta</strong></p>
+        </div> 
         {% for detalle in qsPedido_detalle %}
-        <div class="list-group-item">
-            <h5 class="mb-1">{{ detalle.nombre }}</h5>
-            <p class="mb-1">Cantidad: {{ detalle.unidades }}</p>
-            <p class="mb-1">Precio Unitario: <strong>€{{ detalle.precio }}</strong></p>
+        <div class="list-group-item d-flex">
+            <img class="col-md-1" src="{{detalle.imagen_p.imagen.url}}" width="10%" height="50px" alt="">
+            <h5 class="col-md-2 ">{{ detalle.nombre }}</h5>
+            <p class="col-md-2"> {{ detalle.unidades }}</p>
+            <p class="col-md-2">{{ detalle.precio }}€</p>
+            <p class="col-md-2"><strong>{{ detalle.precio_con_iva|floatformat:2 }}€</strong></p>
+            <p class="col-md-2"><strong>{{ detalle.precio_oferta|floatformat:2 }}€</strong></p>
         </div>
         {% endfor %}
+        <div class="list-group mt-4" align="right">  
+            <p class="col"><strong> Total: {{ total_precio|floatformat:2 }}€</strong></p>
+        </div>
     </div>
     
     <!-- Puedes añadir más secciones como detalles de envío, información del cliente, etc. -->

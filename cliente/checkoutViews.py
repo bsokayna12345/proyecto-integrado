@@ -143,11 +143,29 @@ class DetallesCompra(TemplateView):
         
         # Obtener los detalles del pedido utilizando el related_name 'detalles'
         qsPedido_detalle = pedido_cabecera.detalles.all()
-        
+        if qsPedido_detalle is not None:
+            total_precio = 0
+            for producto_id in qsPedido_detalle:
+                producto_id.imagen_p= producto_id.producto_id.get_Producto_ImagenProducto.filter(imagen_principal=True).first() 
+                precio = producto_id.precio  # Precio del producto
+                iva = producto_id.iva                       
+                precio_con_iva = Decimal(str(precio)) * (Decimal('1') + Decimal(str(iva)))     
+                producto_id.precio_con_iva = precio_con_iva                 
+                # si tengo producto de oferta  
+                if producto_id.producto_id.en_oferta == True:                                            
+                    porcentaje = producto_id.porcentaje
+                    porcentaje_oferta = Decimal(str(porcentaje)) / Decimal('100')
+                    precio_oferta = precio_con_iva  * (Decimal('1') - porcentaje_oferta)                                          
+                    producto_id.precio_oferta = precio_oferta   
+                    total_precio += precio_oferta
+                else:
+                    # Sumar el precio con IVA al total
+                    total_precio += precio_con_iva  
         # Pasar la cabecera y los detalles del pedido al contexto de la plantilla
         context = dict(
             pedido_cabecera=pedido_cabecera,
             qsPedido_detalle=qsPedido_detalle,
+            total_precio=total_precio,
         )
       
         

@@ -17,18 +17,40 @@ class PerfilEditForm(forms.Form):
         widget=forms.TextInput(attrs={"class": "form-control","placeholder":"apellido",}),
     )
     movil = forms.CharField(
-        required=False,
+        required=True,
         label="Móvil",    
-        widget=forms.TextInput(attrs={"class": "form-control","placeholder":"Móvil",}),
+        widget=forms.TextInput(attrs={"class": "form-control","placeholder":"Móvil",}),        
     )
     email = forms.EmailField(
         label="Correo electtronico",        
         widget=forms.EmailInput(attrs={"class": "form-control","placeholder":"correo electronico",}),
     )
     direccion = forms.CharField(
-        required=False,
+        required=True,
+        min_length=3,  # Longitud mínima de 3 caracteres
+        max_length=200,
         label="Dirección",        
         widget=forms.TextInput(attrs={"class": "form-control","placeholder":"dirección",}),
+    )
+
+    pais = forms.CharField(
+        required=True,
+        label="País",  
+        min_length=3,  # Longitud mínima de 3 caracteres
+        max_length=20,      
+        widget=forms.TextInput(attrs={"class": "form-control","placeholder":"apis",}),
+    )
+    provincia = forms.CharField(
+        required=True,
+        label="Provincia",         
+        max_length=20,      
+        widget=forms.TextInput(attrs={"class": "form-control","placeholder":"Provincia",}),
+    )
+    codigo_postal = forms.CharField(
+        required=True,
+        label="Código Postal",        
+        max_length=6,     
+        widget=forms.TextInput(attrs={"class": "form-control","placeholder":"C.P",}),
     )
 
     password1 = forms.CharField(
@@ -40,6 +62,7 @@ class PerfilEditForm(forms.Form):
         widget=forms.PasswordInput(attrs={"class": "form-control","placeholder":"Confirmar Contraseña","autocomplete": "new-password"}),
         strip=False,       
     ) 
+
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -80,7 +103,14 @@ class PerfilEditForm(forms.Form):
         if re.match(r'^[^a-zA-Z]', apellido):
             raise forms.ValidationError("El apellido de usuario debe comenzar con una letra.")        
         return apellido
-        
+
+    def clean_movil(self):
+        value = self.cleaned_data['movil']
+        # Supongamos que el formato de los móviles es de 10 dígitos
+        patron = re.compile(r'^\d{10}$')
+        if not patron.match(value):
+            raise ValidationError('El número de móvil debe tener 10 dígitos.')
+        return value
 
 class PerfileUsuarioForm(forms.ModelForm):
           

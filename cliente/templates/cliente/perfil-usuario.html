@@ -40,116 +40,50 @@
       <div class="col-sm-9">
         <!-- Pestañas -->
         <ul class="nav nav-tabs" id="myTab">
-          <li><a class="nav-link active" href="#home" data-bs-toggle="tab">Pedidos</a></li>
+          <li><a class="nav-link " href="#home" data-bs-toggle="tab">Pedidos</a></li>
           
-          <li><a class="nav-link" href="#settings" data-bs-toggle="tab">Editar perfil</a></li>
+          <li><a class="nav-link active" href="#settings" data-bs-toggle="tab">Editar perfil</a></li>
         </ul>
 
         <!-- Contenido de las pestañas -->
         <div class="tab-content">
-          <div class="tab-pane active" id="home">
+          <div class="tab-pane " id="home">
             <!-- Contenido de la pestaña Home -->                            
-            <table class="table">            
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>usuario</th>
-                        <th>fecha</th>
-                        <th>direccion_entrega_id</th>
-                        <th>order_id</th>               
-                    </tr>
-                </thead>
-                <tbody>
-                <thead>
-                    {% for producto  in qsProducto %}
-                    <tr>
-                      <td>
-                        <a href="{% url 'cliente:detalles_carrito' order_id=producto.id %}">
-                          {{producto.id}}
-                        </a>
-                      </td>
-                      <td>{{producto.usuario_id}}</td>
-                      <td>{{producto.fecha}}</td>
-                      <td>{{producto.direccion_entrega_id}}</td>        
-                      <td>{{producto.order_id}}</td>         
-                     </tr> 
-                    {% endfor %}    
-                </tbody>
-              </table>
-          </div>
-          <div class="tab-pane" id="messages">
-            
-            <!-- Contenido de la pestaña Messages -->
-          </div>
-          {% if form.errors %}          
-            <!-- Contenido de la pestaña Settings -->
-            <hr>
-            <form class="form" action="{% url 'cliente:perfil_usuario_edit' %}" method="post" id="registrationForm">
-            {% csrf_token %}
-                <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.nombre}}                        
-                        <label for="{{form.nombre.id_for_label}}">{{form.nombre.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.nombre.errors}} </h5>                  
-                    </div>      
-                </div>    
-                <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.apellido}}                        
-                        <label for="{{form.apellido.id_for_label}}">{{form.apellido.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.apellido.errors}} </h5>                  
-                    </div>      
-                </div>    
-                {% comment %} <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.movil}}                        
-                        <label for="{{form.movil.id_for_label}}">{{form.movil.label}}</label>
-                        <h5 class="small">{{form.movil.errors}} </h5>                  
-                    </div>      
-                </div>  {% endcomment %}
-                <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.direccion}}                         
-                        <label for="{{form.movil.id_for_label}}">{{form.direccion.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.direccion.errors}} </h5>                  
-                    </div>      
-                </div> 
-                 <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.email}}                        
-                        <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.email.errors}} </h5>                  
-                    </div>      
-                </div>   
-                 <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.password1}}                        
-                        <label for="{{form.password1.id_for_label}}">{{form.password1.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.password1.errors}} </h5>                  
-                    </div>      
-                </div>
-                 <div class="col-md-3">
-                    <div class="form-floating">                                    
-                        {{form.password2}}                        
-                        <label for="{{form.password2.id_for_label}}">{{form.password2.label}}</label>
-                        <h5 class="small" style="color:#F5B7B1;">{{form.password2.errors}} </h5>                  
-                    </div>      
-                </div>        
-                <div class="form-group">
-                    <div class="col-xs-12">
-                        <br>
-                        <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                        <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Cancelar</button>
-                    </div>
-                </div>
-            </form>
+                <table class="table">            
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>usuario</th>
+                            <th>fecha</th>
+                            <th>direccion_entrega_id</th>
+                            <th>order_id</th>               
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <thead>
+                        {% for producto  in qsProducto %}
+                        <tr>
+                        <td>
+                            <a href="{% url 'cliente:detalles_carrito' order_id=producto.id %}">
+                            {{producto.id}}
+                            </a>
+                        </td>
+                        <td>{{producto.usuario_id}}</td>
+                        <td>{{producto.fecha}}</td>
+                        <td>{{producto.direccion_entrega_id}}</td>        
+                        <td>{{producto.order_id}}</td>         
+                        </tr> 
+                        {% endfor %}    
+                    </tbody>
+                </table>
+          </div>          
           
-          {% else %}
-          <div class="tab-pane" id="settings">
+          <div class="tab-pane active" id="settings">
             <!-- Contenido de la pestaña Settings -->
             <hr>
             <form class="form" action="{% url 'cliente:perfil_usuario_edit' %}" method="post" id="registrationForm">
             {% csrf_token %}
+            <div class="row">
                 <div class="col-md-3">
                     <div class="form-floating">                                    
                         {{form.nombre}}                        
@@ -163,22 +97,48 @@
                         <label for="{{form.apellido.id_for_label}}">{{form.apellido.label}}</label>
                         <h5 class="small">{{form.apellido.errors}} </h5>                  
                     </div>      
-                </div>    
-                {% comment %} <div class="col-md-3">
+                </div>  
+                <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.pais}}                         
+                        <label for="{{form.pais.id_for_label}}">{{form.pais.label}}</label>
+                        <h5 class="small">{{form.pais.errors}} </h5>                  
+                    </div>      
+                </div> 
+                <div class="col-md-3">
                     <div class="form-floating">                                    
                         {{form.movil}}                        
                         <label for="{{form.movil.id_for_label}}">{{form.movil.label}}</label>
                         <h5 class="small">{{form.movil.errors}} </h5>                  
                     </div>      
-                </div>  {% endcomment %}
+                </div>                
+            </div>
+            <div class="row">
                 <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.provincia}}                        
+                        <label for="{{form.provincia.id_for_label}}">{{form.provincia.label}}</label>
+                        <h5 class="small">{{form.provincia.errors}} </h5>                  
+                    </div>      
+                </div>
+                <div class="col">
                     <div class="form-floating">                                    
                         {{form.direccion}}                         
                         <label for="{{form.movil.id_for_label}}">{{form.direccion.label}}</label>
                         <h5 class="small">{{form.direccion.errors}} </h5>                  
                     </div>      
-                </div> 
-                 <div class="col-md-3">
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating">                                    
+                        {{form.codigo_postal}}                         
+                        <label for="{{form.codigo_postal.id_for_label}}">{{form.codigo_postal.label}}</label>
+                        <h5 class="small">{{form.codigo_postal.errors}} </h5>                  
+                    </div>      
+                </div>
+                 
+            </div>         
+            <div class="row">
+                <div class="col">
                     <div class="form-floating">                                    
                         {{form.email}}                        
                         <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
@@ -192,23 +152,25 @@
                         <h5 class="small" style="color:#F5B7B1;">{{form.password1.errors}} </h5>                  
                     </div>      
                 </div>
-                 <div class="col-md-3">
+                <div class="col-md-3">
                     <div class="form-floating">                                    
                         {{form.password2}}                        
                         <label for="{{form.password2.id_for_label}}">{{form.password2.label}}</label>
                         <h5 class="small" style="color:#F5B7B1;">{{form.password2.errors}} </h5>                  
                     </div>      
-                </div>        
-                <div class="form-group">
-                    <div class="col-xs-12">
-                        <br>
-                        <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                        <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Cancelar</button>
+                </div>  
+            </div>                       
+                <div class="form-group ">
+                    <div class="form-actions" align="center">
+                        <br>                                             
+                        <button type="submit" class="col-md-2 btn btn-success" name="comando" value="guardar">Guardar</button>
+                        <a  class="col-md-2 btn btn-secondary" href="{% url 'cliente:perfil_usuario' %}">
+                            Volver
+                        </a> 
                     </div>
                 </div>
             </form>
-          </div>
-          {% endif %}
+          </div>    
         </div>
       </div>
     </div>       
