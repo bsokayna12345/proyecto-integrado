@@ -178,6 +178,7 @@ class MostrarCarrito(TemplateView):
                         'quantity': item['unidades'],
                         'price': float(precio_con_iva),
                     })
+                    cart_items.append(dict(subtotal=float(subtotal)))
                 except Producto.DoesNotExist:
                     continue
             

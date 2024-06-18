@@ -7,6 +7,7 @@ PAYPAL_CLIENT_ID = 'AY8FyPJKMUNIbciGoGlOvac7sAGn3JPer7M74lFjV57W6iDvjfI5tSoWWOiS
 PAYPAL_CLIENT_SECRET = 'EIhM8RtIS2q5KBvc4ToqoqeG9Mktz6A5UCuJedARtuXNU_vNJtzLwCex94144Y1BUfdZON6Q6elj9JUJ'
 BASE_URL = "https://api-m.sandbox.paypal.com"
 
+
 def generateAccessToken():
     if not PAYPAL_CLIENT_ID or not PAYPAL_CLIENT_SECRET:
         raise ValueError('no se hay credenciales')

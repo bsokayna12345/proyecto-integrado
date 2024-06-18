@@ -76,18 +76,16 @@
                         <h5 class="small">{{form.iva.errors}} </h5>                  
                     </div>
                 </div>
-                <div class="col-md-1">
-                    <div class="form-floating">                                                               
-                        {{form.en_oferta}}                                                                  
-                        <h5 class="small">{{form.en_oferta.errors}} </h5>                                          
-                    </div>
+                <div class="col-md-4 d-flex justify-content-center">
+                    <label class="align-self-center" for="{{form.en_oferta.id_for_label}}">{{form.en_oferta.label}}</label>                                                                                                           
+                    {{form.en_oferta}}                                                                                      
+                    <h5 class="small">{{form.en_oferta.errors}} </h5>                                                             
                 </div>  
-                 <div class="col-md-4">
-                    <div class="form-floating">                                         
-                        {{form.porcentaje}}                                              
-                        <h5 class="small">{{form.porcentaje.errors}} </h5>                  
-                    </div>
-                </div>   
+                 <div class="col-md-4" id="id_porcentaje_div">                    
+                    <label class="align-self-center" for="{{form.porcentaje.id_for_label}}">{{form.porcentaje.label}}</label>                                          
+                    {{form.porcentaje}}                                              
+                    <h5 class="small">{{form.porcentaje.errors}} </h5>                                  
+                </div>    
             </div>                                  
         </div>
     </div> 
@@ -119,7 +117,8 @@
 <script src="{% static 'administracion/js/select-ajax.js' %}"></script>
 <script>
     var enOfertaCheckbox = document.getElementById('id_en_oferta');
-    var porcentajeInput = document.getElementById('id_porcentaje');
+    var porcentajeInput = document.getElementById('id_porcentaje_div');
+    
 
     // Ocultar el campo de porcentaje inicialmente
     porcentajeInput.style.display = 'none';
