@@ -62,34 +62,43 @@ class LoginView(TemplateView):
                     )               
                     return redirect(('administracion:login')) 
                 else:
-                    # usuario None
+                    # usuario None                    
                     usuario_email = form.cleaned_data['email']
                     usuario_id = User.objects.filter(email=usuario_email).first()
                     if usuario_id:
-                        perfil_id = Perfil.objects.filter(user_id=usuario_id).first()   
-                        contador_intentos = perfil_id.contador
-                        if contador_intentos > 3:
-                            perfil_id.bloqueado = True
-                            perfil_id.fecha_bloqueo = timezone.now()
-                            perfil_id.save()
-                            request.session["add_contexto"]=dict(
-                                toast=dict(
-                                    titulo="Iniciar session",
-                                    tipo="Info",
-                                    mensaje="El usuario esta bloqueado intentalo más tarde",
-                                    ) 
-                                )
+                        perfil_id = Perfil.objects.filter(user_id=usuario_id).first() 
+                        if perfil_id is not None:  
+                            contador_intentos = perfil_id.contador
+                            if contador_intentos > 3:
+                                perfil_id.bloqueado = True
+                                perfil_id.fecha_bloqueo = timezone.now()
+                                perfil_id.save()
+                                request.session["add_contexto"]=dict(
+                                    toast=dict(
+                                        titulo="Iniciar session",
+                                        tipo="Info",
+                                        mensaje="El usuario esta bloqueado intentalo más tarde",
+                                        ) 
+                                    )
+                            else:
+                                contador_intentos += 1
+                                perfil_id.contador = contador_intentos
+                                perfil_id.save()
+                                request.session["add_contexto"]=dict(
+                                    toast=dict(
+                                        titulo="Iniciar session",
+                                        tipo="Info",
+                                        mensaje="Introduce contaseña o correo corrito ",
+                                        ) 
+                                    )   
                         else:
-                            contador_intentos += 1
-                            perfil_id.contador = contador_intentos
-                            perfil_id.save()
                             request.session["add_contexto"]=dict(
-                                toast=dict(
-                                    titulo="Iniciar session",
-                                    tipo="Info",
-                                    mensaje="Introduce contaseña o correo corrito ",
-                                    ) 
-                                )                           
+                                    toast=dict(
+                                        titulo="Iniciar session",
+                                        tipo="Info",
+                                        mensaje="Asegurate de que el usuario tiene perfil",
+                                        ) 
+                                    )   
                     else:
                         # no existe el usuarrio 
                         form.add_error(None, "El correo electrónico o la contraseña son incorrectos.")  

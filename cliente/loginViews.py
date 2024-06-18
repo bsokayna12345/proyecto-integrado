@@ -57,11 +57,11 @@ class LoginView(TemplateView):
                         else:                                                                                                                                     
                             return redirect(('cliente:login'))
                     login(request, usuario_id)
-                    if url_anterior is not None:
-                        return redirect(url_anterior) 
+                    if 'mostrar-carrito' in url_anterior:
+                        if url_anterior:
+                            return redirect('cliente:mostrar_carrito')
                     else:
-
-                        return redirect('cliente:perfil_usuario')                    
+                        return redirect('cliente:perfil_usuario')                 
                 else:
                     # usuario None
                     usuario_email = form.cleaned_data['email']

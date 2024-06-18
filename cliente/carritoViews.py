@@ -12,7 +12,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from main.models import  Direccion, Producto, SubCategoria
 from django.shortcuts import render
-from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import uuid
 from django.contrib.auth.models import User
